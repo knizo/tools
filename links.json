@@ -1,1 +1,32 @@
-
+[
+  {
+    "name": "Lotto",
+    "url": "https://tools.knizo.com/lotto_predictor.html",
+    "description": "lotto"
+  },
+  {
+    "name": "keyboard_space_game",
+    "url": "https://tools.knizo.com/keyboard_space_game.html",
+    "description": "SpaceGame"
+  },
+  {
+    "name": "Wikipedia",
+    "url": "https://www.wikipedia.org",
+    "description": "אנציקלופדיה חופשית"
+  },
+  {
+    "name": "GitHub",
+    "url": "https://github.com",
+    "description": "פרויקטים וקוד"
+  },
+  {
+    "name": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "description": "עוזר AI וכלי עבודה"
+  },
+  {
+    "name": "Google Drive",
+    "url": "https://drive.google.com",
+    "description": "קבצים ומסמכים בענן"
+  }
+]
