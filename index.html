@@ -17,7 +17,7 @@ h1{font-size:28px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px}.count{b
 button{border:0;cursor:pointer;font-weight:700;font-size:14px;transition:.18s}.add-btn{background:var(--accent);color:white;padding:14px 20px;border-radius:14px;box-shadow:0 7px 16px #6258e833}.add-btn:hover{background:#5046d4;transform:translateY(-1px)}
 .export-btn{background:#fff;color:var(--accent);padding:14px 18px;border-radius:14px;border:1px solid #d4d0ff;box-shadow:0 4px 12px #6258e81a}.export-btn:hover{background:#f5f3ff;transform:translateY(-1px)}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 5px 18px #24304d08;transition:.2s;min-width:0}.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
-.card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.favicon{width:43px;height:43px;border-radius:13px;background:#f0efff;display:grid;place-items:center;color:var(--accent);font-size:19px;font-weight:800;flex-shrink:0;overflow:hidden}.favicon img{width:22px;height:22px}.card-title{min-width:0;flex:1}.card-title h3{font-size:16px;margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-title small{font-size:12px;color:var(--muted);direction:ltr;display:block;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.favicon{width:43px;height:43px;border-radius:13px;background:#f0efff;display:grid;place-items:center;color:var(--accent);font-size:19px;font-weight:800;flex-shrink:0;overflow:hidden}.card-title{min-width:0;flex:1}.card-title h3{font-size:16px;margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-title small{font-size:12px;color:var(--muted);direction:ltr;display:block;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-desc{font-size:13px;color:#68738a;line-height:1.55;min-height:20px;margin:0 0 16px;overflow-wrap:anywhere}.card-actions{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0f2f7;padding-top:13px}.visit{color:var(--accent);text-decoration:none;font-size:13px;font-weight:700}.visit:hover{text-decoration:underline}.delete{background:#fff0f1;color:var(--danger);padding:8px 11px;border-radius:10px;font-size:12px}.delete:hover{background:#ffe1e4}
 .empty{grid-column:1/-1;text-align:center;padding:55px 20px;background:#fff;border:1px dashed #d9deea;border-radius:20px;color:var(--muted)}.empty b{display:block;color:var(--ink);font-size:17px;margin:10px 0 6px}
 .modal-backdrop{position:fixed;inset:0;background:#12182b80;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal-backdrop.show{display:flex}.modal{width:min(460px,100%);background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #10162c55}.modal h2{margin:0 0 7px;font-size:21px}.modal p{margin:0 0 20px;color:var(--muted);font-size:13px}.field{margin-bottom:14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:14px;outline:none}.modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions button{flex:1;padding:13px;border-radius:12px}.save{background:var(--accent);color:white}.cancel{background:#f1f3f8;color:#59647a}.toast{position:fixed;bottom:24px;left:24px;background:#202943;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}
@@ -29,10 +29,10 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
 <main class="wrap">
   <header class="top">
     <div class="brand"><div class="logo">↗</div><div><h1>הקישורים שלי</h1><div class="sub">כל האתרים החשובים שלך, במקום אחד</div></div></div>
-    <div class="count" id="count">0 קישורים</div>
+    <div class="count" id="count">טוען...</div>
   </header>
   <section class="hero">
-    <div><h2>מרכז הקישורים האישי שלך</h2><p>שמור את האתרים שאתה משתמש בהם, הוסף קישורים חדשים<br>ונקה את הרשימה בכל רגע.</p></div>
+    <div><h2>מרכז הקישורים האישי שלך</h2><p>הקישורים נטענים מקובץ <b>links.json</b> ב-GitHub.<br>לעדכון – ערוך את הקובץ ב-GitHub והעלה אותו.</p></div>
     <div class="hero-icon">🔗</div>
   </section>
   <section class="toolbar">
@@ -41,12 +41,12 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
     <button class="add-btn" id="openModal">＋ הוסף קישור חדש</button>
   </section>
   <section class="grid" id="grid" aria-live="polite"></section>
-  <footer>הקישורים נשמרים אוטומטית בדפדפן שלך במכשיר הזה. אפשר גם להוריד אותם לקובץ JSON.</footer>
+  <footer>המקור העיקרי של הקישורים הוא קובץ <code>links.json</code> ב-GitHub. שינויים מקומיים נשמרים רק בדפדפן.</footer>
 </main>
 
 <div class="modal-backdrop" id="backdrop">
   <form class="modal" id="linkForm">
-    <h2>הוספת קישור חדש</h2><p>מלא את פרטי האתר והוא יתווסף לרשימה שלך.</p>
+    <h2>הוספת קישור חדש</h2><p>הקישור יתווסף לרשימה המקומית (לא מעדכן את הקובץ ב-GitHub).</p>
     <div class="field"><label for="name">שם האתר</label><input id="name" required maxlength="60" placeholder="לדוגמה: Google"></div>
     <div class="field"><label for="url">כתובת האתר</label><input id="url" type="url" required placeholder="https://example.com"></div>
     <div class="field"><label for="description">תיאור קצר (לא חובה)</label><input id="description" maxlength="120" placeholder="למה הקישור משמש?"></div>
@@ -54,26 +54,19 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
   </form>
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
 const KEY = 'my-links-dashboard-v1';
-const starter = [
-  {name:'Lotto',url:'https://tools.knizo.com/lotto_predictor.html',description:'lotto'},
-  {name:'keyboard_space_game',url:'https://tools.knizo.com/keyboard_space_game.html',description:'SpaceGame'},
-  {name:'Wikipedia',url:'https://www.wikipedia.org',description:'אנציקלופדיה חופשית'},
-  {name:'GitHub',url:'https://github.com',description:'פרויקטים וקוד'},
-  {name:'ChatGPT',url:'https://chatgpt.com',description:'עוזר AI וכלי עבודה'},
-  {name:'Google Drive',url:'https://drive.google.com',description:'קבצים ומסמכים בענן'}
-];
-let links;
-try { links = JSON.parse(localStorage.getItem(KEY)); } catch(e) { links = null; }
-if (!Array.isArray(links)) links = starter;
+const JSON_URL = 'links.json';   // הקובץ ב-GitHub (באותה תיקייה)
+
+let links = [];
 
 const grid = document.getElementById('grid');
 const search = document.getElementById('search');
 const backdrop = document.getElementById('backdrop');
 const form = document.getElementById('linkForm');
 
-function save() {
+function saveLocal() {
   localStorage.setItem(KEY, JSON.stringify(links));
 }
 
@@ -85,18 +78,32 @@ function render() {
   const q = search.value.trim().toLowerCase();
   const filtered = links.filter(x => (x.name + ' ' + x.url + ' ' + (x.description || '')).toLowerCase().includes(q));
   document.getElementById('count').textContent = links.length + ' קישורים';
+
   if (!filtered.length) {
-    grid.innerHTML = '<div class="empty"><div style="font-size:32px">🔎</div><b>' + (q ? 'לא נמצאו תוצאות' : 'עדיין אין קישורים') + '</b>' + (q ? 'נסה לחפש מונח אחר.' : 'הוסף את הקישור הראשון שלך באמצעות הכפתור למעלה.') + '</div>';
+    grid.innerHTML = `<div class="empty">
+      <div style="font-size:32px">🔎</div>
+      <b>${q ? 'לא נמצאו תוצאות' : 'עדיין אין קישורים'}</b>
+      ${q ? 'נסה לחפש מונח אחר.' : 'הוסף קישור או עדכן את links.json ב-GitHub.'}
+    </div>`;
     return;
   }
+
   grid.innerHTML = filtered.map(x => {
     const i = links.indexOf(x);
     const host = domain(x.url);
-    const icon = '🌐';
     return `<article class="card">
-      <div class="card-head"><div class="favicon">${icon}</div><div class="card-title"><h3>${esc(x.name)}</h3><small>${esc(host)}</small></div></div>
+      <div class="card-head">
+        <div class="favicon">🌐</div>
+        <div class="card-title">
+          <h3>${esc(x.name)}</h3>
+          <small>${esc(host)}</small>
+        </div>
+      </div>
       <p class="card-desc">${esc(x.description || ' ')}</p>
-      <div class="card-actions"><a class="visit" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">פתח אתר ↗</a><button class="delete" data-delete="${i}" aria-label="מחק ${esc(x.name)}">מחק קישור</button></div>
+      <div class="card-actions">
+        <a class="visit" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">פתח אתר ↗</a>
+        <button class="delete" data-delete="${i}" aria-label="מחק ${esc(x.name)}">מחק קישור</button>
+      </div>
     </article>`;
   }).join('');
 }
@@ -136,6 +143,38 @@ function downloadLinksJson() {
   toast('הקובץ links.json הורד בהצלחה');
 }
 
+// ===== טעינה מקובץ JSON ב-GitHub =====
+async function loadFromJson() {
+  try {
+    const res = await fetch(JSON_URL + '?t=' + Date.now()); // מונע cache
+    if (!res.ok) throw new Error('לא נמצא links.json');
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('פורמט לא תקין');
+    links = data;
+    saveLocal(); // שומר גם מקומית
+    render();
+    toast('הקישורים נטענו מ-links.json');
+  } catch (err) {
+    console.warn(err);
+    // fallback ל-localStorage או רשימה ריקה
+    try {
+      const local = JSON.parse(localStorage.getItem(KEY));
+      if (Array.isArray(local) && local.length) {
+        links = local;
+        render();
+        toast('נטען מהזיכרון המקומי (לא נמצא links.json)');
+      } else {
+        links = [];
+        render();
+        toast('לא נמצא links.json – הוסף קישורים או העלה את הקובץ');
+      }
+    } catch {
+      links = [];
+      render();
+    }
+  }
+}
+
 document.getElementById('openModal').addEventListener('click', open);
 document.getElementById('closeModal').addEventListener('click', close);
 document.getElementById('exportJson').addEventListener('click', downloadLinksJson);
@@ -151,9 +190,9 @@ grid.addEventListener('click', e => {
   if (!Number.isInteger(i) || !links[i]) return;
   if (confirm(`למחוק את הקישור "${name}"?`)) {
     links.splice(i, 1);
-    save();
+    saveLocal();
     render();
-    toast('הקישור נמחק');
+    toast('הקישור נמחק (רק מקומית)');
   }
 });
 
@@ -172,14 +211,14 @@ form.addEventListener('submit', e => {
     return;
   }
   links.unshift({ name, url, description });
-  save();
+  saveLocal();
   render();
   close();
-  toast('הקישור נוסף בהצלחה');
+  toast('הקישור נוסף (רק מקומית – לעדכון קבוע ערוך את links.json)');
 });
 
-save();
-render();
+// התחלה
+loadFromJson();
 </script>
 </body>
 </html>
