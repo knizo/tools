@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קישורים שלי</title>
+<style>
+:root{--bg:#f4f6fb;--surface:#fff;--ink:#182235;--muted:#778198;--line:#e8ecf3;--accent:#6258e8;--accent2:#8b7cf6;--danger:#e05262;--shadow:0 18px 50px rgba(30,42,75,.08)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 8% 0%,#e8e9ff 0,transparent 28%),var(--bg);font-family:Arial,"Segoe UI",sans-serif;color:var(--ink);min-height:100vh}
+.wrap{max-width:1120px;margin:auto;padding:44px 24px 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:30px}
+.brand{display:flex;align-items:center;gap:13px}.logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--accent),#9b76f6);display:grid;place-items:center;color:#fff;font-size:23px;box-shadow:0 8px 20px #6258e84d}
+h1{font-size:28px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px}.count{background:#eeedff;color:var(--accent);padding:9px 14px;border-radius:30px;font-weight:700;font-size:13px}
+.hero{background:linear-gradient(115deg,#272b55,#5149a8 60%,#7668e8);border-radius:25px;padding:30px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:20px;box-shadow:var(--shadow);margin-bottom:25px;overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;width:240px;height:240px;border:1px solid #ffffff24;border-radius:50%;left:8%;top:-130px;box-shadow:0 0 0 28px #ffffff0a,0 0 0 58px #ffffff08}
+.hero h2{font-size:23px;margin:0 0 8px}.hero p{margin:0;color:#e1e0ff;font-size:14px;line-height:1.6}.hero-icon{font-size:50px;opacity:.9;z-index:1}
+.toolbar{display:flex;gap:12px;align-items:center;margin-bottom:20px}.search{flex:1;position:relative}.search input{width:100%;padding:14px 44px 14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;font-size:14px;outline:none;transition:.2s}.search input:focus,.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #6258e81a}.search span{position:absolute;right:16px;top:13px;color:#9aa3b5}
+button{border:0;cursor:pointer;font-weight:700;font-size:14px;transition:.18s}.add-btn{background:var(--accent);color:white;padding:14px 20px;border-radius:14px;box-shadow:0 7px 16px #6258e833}.add-btn:hover{background:#5046d4;transform:translateY(-1px)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 5px 18px #24304d08;transition:.2s;min-width:0}.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.favicon{width:43px;height:43px;border-radius:13px;background:#f0efff;display:grid;place-items:center;color:var(--accent);font-size:19px;font-weight:800;flex-shrink:0;overflow:hidden}.favicon img{width:22px;height:22px}.card-title{min-width:0;flex:1}.card-title h3{font-size:16px;margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-title small{font-size:12px;color:var(--muted);direction:ltr;display:block;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-desc{font-size:13px;color:#68738a;line-height:1.55;min-height:20px;margin:0 0 16px;overflow-wrap:anywhere}.card-actions{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0f2f7;padding-top:13px}.visit{color:var(--accent);text-decoration:none;font-size:13px;font-weight:700}.visit:hover{text-decoration:underline}.delete{background:#fff0f1;color:var(--danger);padding:8px 11px;border-radius:10px;font-size:12px}.delete:hover{background:#ffe1e4}
+.empty{grid-column:1/-1;text-align:center;padding:55px 20px;background:#fff;border:1px dashed #d9deea;border-radius:20px;color:var(--muted)}.empty b{display:block;color:var(--ink);font-size:17px;margin:10px 0 6px}
+.modal-backdrop{position:fixed;inset:0;background:#12182b80;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal-backdrop.show{display:flex}.modal{width:min(460px,100%);background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #10162c55}.modal h2{margin:0 0 7px;font-size:21px}.modal p{margin:0 0 20px;color:var(--muted);font-size:13px}.field{margin-bottom:14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:14px;outline:none}.modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions button{flex:1;padding:13px;border-radius:12px}.save{background:var(--accent);color:white}.cancel{background:#f1f3f8;color:#59647a}.toast{position:fixed;bottom:24px;left:24px;background:#202943;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}
+footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){.wrap{padding:25px 15px 45px}.top{align-items:flex-start}.hero{padding:23px}.hero-icon{font-size:38px}.hero h2{font-size:20px}.toolbar{flex-wrap:wrap}.search{flex-basis:100%}.add-btn{width:100%}.grid{grid-template-columns:1fr}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">↗</div><div><h1>הקישורים שלי</h1><div class="sub">כל האתרים החשובים שלך, במקום אחד</div></div></div>
+    <div class="count" id="count">0 קישורים</div>
+  </header>
+  <section class="hero">
+    <div><h2>מרכז הקישורים האישי שלך</h2><p>שמור את האתרים שאתה משתמש בהם, הוסף קישורים חדשים<br>ונקה את הרשימה בכל רגע.</p></div>
+    <div class="hero-icon">🔗</div>
+  </section>
+  <section class="toolbar">
+    <div class="search"><span>⌕</span><input id="search" type="search" placeholder="חיפוש לפי שם אתר או כתובת..."></div>
+    <button class="add-btn" id="openModal">＋ הוסף קישור חדש</button>
+  </section>
+  <section class="grid" id="grid" aria-live="polite"></section>
+  <footer>הקישורים נשמרים אוטומטית בדפדפן שלך במכשיר הזה.</footer>
+</main>
+
+<div class="modal-backdrop" id="backdrop">
+  <form class="modal" id="linkForm">
+    <h2>הוספת קישור חדש</h2><p>מלא את פרטי האתר והוא יתווסף לרשימה שלך.</p>
+    <div class="field"><label for="name">שם האתר</label><input id="name" required maxlength="60" placeholder="לדוגמה: Google"></div>
+    <div class="field"><label for="url">כתובת האתר</label><input id="url" type="url" required placeholder="https://example.com"></div>
+    <div class="field"><label for="description">תיאור קצר (לא חובה)</label><input id="description" maxlength="120" placeholder="למה הקישור משמש?"></div>
+    <div class="modal-actions"><button class="save" type="submit">שמור קישור</button><button class="cancel" type="button" id="closeModal">ביטול</button></div>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY='my-links-dashboard-v1';
+const starter=[
+ {name:'Google',url:'https://www.google.com',description:'מנוע החיפוש של Google'},
+ {name:'YouTube',url:'https://www.youtube.com',description:'סרטונים, מוזיקה ותוכן'},
+ {name:'Wikipedia',url:'https://www.wikipedia.org',description:'אנציקלופדיה חופשית'},
+ {name:'GitHub',url:'https://github.com',description:'פרויקטים וקוד'},
+ {name:'ChatGPT',url:'https://chatgpt.com',description:'עוזר AI וכלי עבודה'},
+ {name:'Google Drive',url:'https://drive.google.com',description:'קבצים ומסמכים בענן'}
+];
+let links;
+try{links=JSON.parse(localStorage.getItem(KEY))}catch(e){links=null}
+if(!Array.isArray(links)) links=starter;
+const grid=document.getElementById('grid'),search=document.getElementById('search'),backdrop=document.getElementById('backdrop'),form=document.getElementById('linkForm');
+function save(){localStorage.setItem(KEY,JSON.stringify(links))}
+function domain(url){try{return new URL(url).hostname.replace(/^www\\./,'')}catch{return url}}
+function render(){
+ const q=search.value.trim().toLowerCase();
+ const filtered=links.filter(x=>(x.name+' '+x.url+' '+(x.description||'')).toLowerCase().includes(q));
+ document.getElementById('count').textContent=links.length+' קישורים';
+ if(!filtered.length){grid.innerHTML='<div class="empty"><div style="font-size:32px">🔎</div><b>'+(q?'לא נמצאו תוצאות':'עדיין אין קישורים')+'</b>'+(q?'נסה לחפש מונח אחר.':'הוסף את הקישור הראשון שלך באמצעות הכפתור למעלה.')+'</div>';return}
+ grid.innerHTML=filtered.map(x=>{
+  const i=links.indexOf(x),host=domain(x.url);
+  let icon='🌐';
+  return `<article class="card">
+   <div class="card-head"><div class="favicon">${icon}</div><div class="card-title"><h3>${esc(x.name)}</h3><small>${esc(host)}</small></div></div>
+   <p class="card-desc">${esc(x.description||' ')}</p>
+   <div class="card-actions"><a class="visit" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">פתח אתר ↗</a><button class="delete" data-delete="${i}" aria-label="מחק ${esc(x.name)}">מחק קישור</button></div>
+  </article>`;
+ }).join('');
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function open(){form.reset();backdrop.classList.add('show');document.getElementById('name').focus()}
+function close(){backdrop.classList.remove('show')}
+document.getElementById('openModal').addEventListener('click',open);
+document.getElementById('closeModal').addEventListener('click',close);
+backdrop.addEventListener('click',e=>{if(e.target===backdrop)close()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+search.addEventListener('input',render);
+grid.addEventListener('click',e=>{
+ const btn=e.target.closest('[data-delete]');if(!btn)return;
+ const i=Number(btn.dataset.delete),name=links[i]?.name;
+ if(!Number.isInteger(i)||!links[i])return;
+ if(confirm(`למחוק את הקישור "${name}"?`)){links.splice(i,1);save();render();toast('הקישור נמחק')}
+});
+form.addEventListener('submit',e=>{
+ e.preventDefault();
+ const name=document.getElementById('name').value.trim();
+ let url=document.getElementById('url').value.trim();
+ const description=document.getElementById('description').value.trim();
+ if(!/^https?:\/\//i.test(url))url='https://'+url;
+ try{const parsed=new URL(url);if(!['http:','https:'].includes(parsed.protocol))throw 0;url=parsed.href}catch{toast('נא להזין כתובת אתר תקינה');return}
+ links.unshift({name,url,description});save();render();close();toast('הקישור נוסף בהצלחה');
+});
+save();render();
+</script>
+</body>
+</html>
