@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#030615" />
+  <title>Keyboard Space Adventure</title>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --panel: rgba(7, 12, 35, 0.72);
+      --panel-border: rgba(255, 255, 255, 0.18);
+      --text: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #030615;
+      font-family:
+        "Trebuchet MS",
+        "Segoe UI",
+        Arial,
+        sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      position: relative;
+    }
+
+    #spaceCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(65, 45, 150, 0.24), transparent 35%),
+        radial-gradient(circle at 78% 70%, rgba(0, 125, 170, 0.16), transparent 38%),
+        linear-gradient(180deg, #050817 0%, #02030c 100%);
+    }
+
+    #nebula {
+      position: fixed;
+      inset: -25%;
+      pointer-events: none;
+      opacity: 0.55;
+      filter: blur(45px);
+      background:
+        radial-gradient(circle at 30% 45%, rgba(120, 67, 255, 0.22), transparent 24%),
+        radial-gradient(circle at 67% 38%, rgba(0, 210, 255, 0.14), transparent 26%),
+        radial-gradient(circle at 52% 76%, rgba(255, 72, 190, 0.11), transparent 22%);
+      animation: nebulaDrift 22s ease-in-out infinite alternate;
+    }
+
+    @keyframes nebulaDrift {
+      from {
+        transform: translate3d(-2%, -1%, 0) scale(1);
+      }
+      to {
+        transform: translate3d(3%, 2%, 0) scale(1.08);
+      }
+    }
+
+    #effectsLayer {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .key-pop {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      min-width: 1.1em;
+      line-height: 0.95;
+      font-weight: 900;
+      text-align: center;
+      color: var(--pop-color, #fff);
+      text-shadow:
+        0 0 10px var(--glow-color, rgba(255, 255, 255, 0.9)),
+        0 0 24px var(--glow-color, rgba(255, 255, 255, 0.7)),
+        0 0 52px var(--glow-color, rgba(255, 255, 255, 0.5));
+      transform: translate(-50%, -50%) scale(0.2) rotate(var(--start-rotation, -8deg));
+      opacity: 0;
+      animation: popAndFade var(--duration, 1700ms) cubic-bezier(.17,.84,.38,1) forwards;
+      will-change: transform, opacity, filter;
+    }
+
+    .key-pop.emoji {
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.55));
+      text-shadow: none;
+    }
+
+    @keyframes popAndFade {
+      0% {
+        opacity: 0;
+        transform:
+          translate(-50%, -50%)
+          scale(0.12)
+          rotate(var(--start-rotation, -8deg));
+        filter: blur(5px);
+      }
+      17% {
+        opacity: 1;
+        transform:
+          translate(-50%, -58%)
+          scale(1.25)
+          rotate(0deg);
+        filter: blur(0);
+      }
+      55% {
+        opacity: 1;
+        transform:
+          translate(-50%, -72%)
+          scale(1)
+          rotate(var(--mid-rotation, 3deg));
+      }
+      100% {
+        opacity: 0;
+        transform:
+          translate(-50%, -145%)
+          scale(1.35)
+          rotate(var(--end-rotation, 10deg));
+        filter: blur(2px);
+      }
+    }
+
+    #welcome {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: min(88vw, 620px);
+      padding: 30px 26px;
+      border: 1px solid var(--panel-border);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.48),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      text-align: center;
+      transform: translate(-50%, -50%);
+      transition:
+        opacity 550ms ease,
+        transform 550ms ease;
+      z-index: 10;
+    }
+
+    #welcome.hidden {
+      opacity: 0;
+      transform: translate(-50%, -45%) scale(0.92);
+      pointer-events: none;
+    }
+
+    #welcome .rocket {
+      display: block;
+      margin-bottom: 10px;
+      font-size: clamp(48px, 10vw, 78px);
+      animation: rocketFloat 2.2s ease-in-out infinite;
+    }
+
+    @keyframes rocketFloat {
+      0%,
+      100% {
+        transform: translateY(0) rotate(-4deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(4deg);
+      }
+    }
+
+    #welcome h1 {
+      margin: 0;
+      font-size: clamp(30px, 7vw, 54px);
+      letter-spacing: 0.02em;
+      background: linear-gradient(90deg, #ffffff, #8be9ff, #f7a8ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    #welcome p {
+      margin: 14px 0 0;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: clamp(16px, 3.8vw, 22px);
+      line-height: 1.45;
+    }
+
+    #welcome .hint {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      animation: hintPulse 1.7s ease-in-out infinite;
+    }
+
+    @keyframes hintPulse {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(135, 224, 255, 0);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 26px 3px rgba(135, 224, 255, 0.25);
+        transform: scale(1.04);
+      }
+    }
+
+    #controls {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 20;
+      display: flex;
+      gap: 10px;
+    }
+
+    .control-button {
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 50%;
+      background: rgba(6, 11, 32, 0.62);
+      color: #fff;
+      font-size: 21px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition:
+        transform 160ms ease,
+        background 160ms ease;
+    }
+
+    .control-button:hover,
+    .control-button:focus-visible {
+      transform: scale(1.08);
+      background: rgba(32, 44, 91, 0.82);
+      outline: none;
+    }
+
+    #counter {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 20;
+      padding: 9px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(6, 11, 32, 0.55);
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 14px;
+      font-weight: 700;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: opacity 400ms ease;
+    }
+
+    @media (max-width: 600px) {
+      #controls {
+        top: 10px;
+        right: 10px;
+      }
+
+      .control-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      #counter {
+        left: 10px;
+        bottom: 10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #nebula,
+      #welcome .rocket,
+      #welcome .hint {
+        animation: none;
+      }
+
+      .key-pop {
+        animation-duration: 800ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="spaceCanvas" aria-hidden="true"></canvas>
+  <div id="nebula" aria-hidden="true"></div>
+  <div id="effectsLayer" aria-live="polite"></div>
+
+  <main id="welcome">
+    <span class="rocket" aria-hidden="true">🚀</span>
+    <h1>Keyboard Space</h1>
+    <p>Press any letter, number, symbol, or special key.</p>
+    <span class="hint">Press any key to begin</span>
+  </main>
+
+  <div id="controls">
+    <button
+      id="fullscreenButton"
+      class="control-button"
+      type="button"
+      title="Fullscreen"
+      aria-label="Open fullscreen"
+    >⛶</button>
+  </div>
+
+  <div id="counter">Keys pressed: <span id="countValue">0</span></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const canvas = document.getElementById("spaceCanvas");
+      const ctx = canvas.getContext("2d", { alpha: true });
+      const effectsLayer = document.getElementById("effectsLayer");
+      const welcome = document.getElementById("welcome");
+      const countValue = document.getElementById("countValue");
+      const fullscreenButton = document.getElementById("fullscreenButton");
+
+      const colorPairs = [
+        ["#ffffff", "rgba(255,255,255,.95)"],
+        ["#7ee8ff", "rgba(72,215,255,.95)"],
+        ["#ff8dea", "rgba(255,90,215,.9)"],
+        ["#ffe66d", "rgba(255,221,65,.95)"],
+        ["#9cff8f", "rgba(90,255,120,.9)"],
+        ["#b99cff", "rgba(150,110,255,.95)"],
+        ["#ff9f68", "rgba(255,125,55,.95)"]
+      ];
+
+      const emojis = [
+        "🚀", "🌟", "🪐", "👽", "🌈", "🦄", "🐶", "🐱",
+        "🐼", "🦁", "🐸", "🦋", "🍉", "🍕", "🎈", "🎉",
+        "⚽", "🏀", "🎮", "💎", "❤️", "😄", "🤩", "🥳"
+      ];
+
+      let stars = [];
+      let shootingStars = [];
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+      let lastFrameTime = performance.now();
+      let keyCount = 0;
+      let nextEmojiAt = randomInt(4, 8);
+      let welcomeHidden = false;
+      let nextShootingStarTime = performance.now() + randomInt(2500, 6500);
+
+      function random(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function randomInt(min, max) {
+        return Math.floor(random(min, max + 1));
+      }
+
+      function resizeCanvas() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        createStarfield();
+      }
+
+      function createStarfield() {
+        const starCount = Math.min(
+          420,
+          Math.max(120, Math.floor((width * height) / 5000))
+        );
+
+        stars = Array.from({ length: starCount }, () => createStar(true));
+      }
+
+      function createStar(randomY = false) {
+        const depth = Math.random();
+        return {
+          x: random(0, width),
+          y: randomY ? random(0, height) : -10,
+          radius: random(0.45, 1.7) * (0.55 + depth),
+          speed: random(8, 34) * (0.45 + depth),
+          alpha: random(0.28, 1),
+          twinkleSpeed: random(0.8, 2.8),
+          twinkleOffset: random(0, Math.PI * 2),
+          drift: random(-2.5, 2.5),
+          hue: Math.random() < 0.14 ? random(185, 285) : 0
+        };
+      }
+
+      function spawnShootingStar() {
+        const fromLeft = Math.random() > 0.5;
+        shootingStars.push({
+          x: fromLeft ? random(-80, width * 0.45) : random(width * 0.55, width + 80),
+          y: random(-20, height * 0.35),
+          vx: fromLeft ? random(390, 610) : random(-610, -390),
+          vy: random(210, 330),
+          life: 0,
+          maxLife: random(0.65, 1.05),
+          length: random(90, 170)
+        });
+      }
+
+      function drawBackground() {
+        const gradient = ctx.createLinearGradient(0, 0, 0, height);
+        gradient.addColorStop(0, "#050817");
+        gradient.addColorStop(0.55, "#05091b");
+        gradient.addColorStop(1, "#02030b");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      function drawStars(time, deltaSeconds) {
+        for (const star of stars) {
+          star.y += star.speed * deltaSeconds;
+          star.x += star.drift * deltaSeconds;
+
+          if (star.y > height + 8) {
+            Object.assign(star, createStar(false));
+          }
+
+          if (star.x < -8) star.x = width + 8;
+          if (star.x > width + 8) star.x = -8;
+
+          const twinkle =
+            0.72 +
+            Math.sin(time * 0.001 * star.twinkleSpeed + star.twinkleOffset) * 0.28;
+          const alpha = Math.max(0.08, star.alpha * twinkle);
+
+          ctx.beginPath();
+          ctx.fillStyle = star.hue
+            ? `hsla(${star.hue}, 95%, 82%, ${alpha})`
+            : `rgba(255, 255, 255, ${alpha})`;
+          ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (star.radius > 1.45 && alpha > 0.6) {
+            ctx.strokeStyle = star.hue
+              ? `hsla(${star.hue}, 95%, 80%, ${alpha * 0.45})`
+              : `rgba(255, 255, 255, ${alpha * 0.35})`;
+            ctx.lineWidth = 0.65;
+            ctx.beginPath();
+            ctx.moveTo(star.x - star.radius * 3, star.y);
+            ctx.lineTo(star.x + star.radius * 3, star.y);
+            ctx.moveTo(star.x, star.y - star.radius * 3);
+            ctx.lineTo(star.x, star.y + star.radius * 3);
+            ctx.stroke();
+          }
+        }
+      }
+
+      function drawShootingStars(deltaSeconds) {
+        for (let i = shootingStars.length - 1; i >= 0; i -= 1) {
+          const star = shootingStars[i];
+          star.life += deltaSeconds;
+          star.x += star.vx * deltaSeconds;
+          star.y += star.vy * deltaSeconds;
+
+          const progress = star.life / star.maxLife;
+          const alpha = Math.sin(Math.min(1, progress) * Math.PI);
+
+          const velocityLength = Math.hypot(star.vx, star.vy);
+          const ux = star.vx / velocityLength;
+          const uy = star.vy / velocityLength;
+
+          const tailX = star.x - ux * star.length;
+          const tailY = star.y - uy * star.length;
+
+          const gradient = ctx.createLinearGradient(tailX, tailY, star.x, star.y);
+          gradient.addColorStop(0, "rgba(120, 220, 255, 0)");
+          gradient.addColorStop(0.7, `rgba(165, 235, 255, ${alpha * 0.5})`);
+          gradient.addColorStop(1, `rgba(255, 255, 255, ${alpha})`);
+
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(tailX, tailY);
+          ctx.lineTo(star.x, star.y);
+          ctx.stroke();
+
+          ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (star.life >= star.maxLife) {
+            shootingStars.splice(i, 1);
+          }
+        }
+      }
+
+      function animate(time) {
+        const deltaSeconds = Math.min((time - lastFrameTime) / 1000, 0.05);
+        lastFrameTime = time;
+
+        drawBackground();
+        drawStars(time, deltaSeconds);
+
+        if (time >= nextShootingStarTime) {
+          spawnShootingStar();
+          nextShootingStarTime = time + randomInt(3500, 8500);
+        }
+
+        drawShootingStars(deltaSeconds);
+        requestAnimationFrame(animate);
+      }
+
+      function hideWelcome() {
+        if (welcomeHidden) return;
+        welcomeHidden = true;
+        welcome.classList.add("hidden");
+        window.setTimeout(() => {
+          welcome.style.display = "none";
+        }, 600);
+      }
+
+      function friendlyKey(event) {
+        const specialKeys = {
+          " ": "SPACE",
+          Enter: "↵",
+          Escape: "ESC",
+          Backspace: "⌫",
+          Delete: "DEL",
+          Tab: "TAB",
+          CapsLock: "CAPS",
+          Shift: "SHIFT",
+          Control: "CTRL",
+          Alt: "ALT",
+          Meta: "⌘",
+          ArrowUp: "↑",
+          ArrowDown: "↓",
+          ArrowLeft: "←",
+          ArrowRight: "→",
+          PageUp: "PG↑",
+          PageDown: "PG↓",
+          Home: "HOME",
+          End: "END",
+          Insert: "INS",
+          ContextMenu: "MENU"
+        };
+
+        if (specialKeys[event.key]) return specialKeys[event.key];
+        if (/^F\d{1,2}$/.test(event.key)) return event.key;
+        if (event.key.length === 1) return event.key.toUpperCase();
+
+        return event.key.slice(0, 8).toUpperCase();
+      }
+
+      function safePosition() {
+        const sideMargin = Math.min(120, width * 0.16);
+        const topMargin = Math.min(130, height * 0.18);
+        const bottomMargin = Math.min(110, height * 0.16);
+
+        return {
+          x: random(sideMargin, Math.max(sideMargin + 1, width - sideMargin)),
+          y: random(topMargin, Math.max(topMargin + 1, height - bottomMargin))
+        };
+      }
+
+      function createPopup(content, isEmoji = false) {
+        const element = document.createElement("div");
+        const position = safePosition();
+        const [color, glow] = colorPairs[randomInt(0, colorPairs.length - 1)];
+
+        element.className = "key-pop" + (isEmoji ? " emoji" : "");
+        element.textContent = content;
+        element.style.left = `${position.x}px`;
+        element.style.top = `${position.y}px`;
+        element.style.fontSize = isEmoji
+          ? `${randomInt(70, 145)}px`
+          : `${randomInt(72, 150)}px`;
+        element.style.setProperty("--pop-color", color);
+        element.style.setProperty("--glow-color", glow);
+        element.style.setProperty("--duration", `${randomInt(1400, 2100)}ms`);
+        element.style.setProperty("--start-rotation", `${randomInt(-16, 16)}deg`);
+        element.style.setProperty("--mid-rotation", `${randomInt(-6, 6)}deg`);
+        element.style.setProperty("--end-rotation", `${randomInt(-14, 14)}deg`);
+
+        effectsLayer.appendChild(element);
+        element.addEventListener("animationend", () => element.remove(), {
+          once: true
+        });
+      }
+
+      function handleInput(displayValue) {
+        hideWelcome();
+
+        keyCount += 1;
+        countValue.textContent = String(keyCount);
+
+        const shouldShowEmoji = keyCount >= nextEmojiAt;
+
+        if (shouldShowEmoji) {
+          createPopup(emojis[randomInt(0, emojis.length - 1)], true);
+          nextEmojiAt = keyCount + randomInt(3, 8);
+        } else {
+          createPopup(displayValue, false);
+        }
+      }
+
+      window.addEventListener("keydown", (event) => {
+        if (event.repeat) return;
+
+        // Keep common browser/system shortcuts available.
+        const shortcutPressed = event.ctrlKey || event.metaKey || event.altKey;
+        if (!shortcutPressed) {
+          event.preventDefault();
+        }
+
+        handleInput(friendlyKey(event));
+      }, { passive: false });
+
+      // Touch and mouse support: useful on tablets and touchscreens.
+      window.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("button")) return;
+        const touchCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const randomCharacter =
+          touchCharacters[randomInt(0, touchCharacters.length - 1)];
+        handleInput(randomCharacter);
+      });
+
+      fullscreenButton.addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) {
+            await document.documentElement.requestFullscreen();
+          } else {
+            await document.exitFullscreen();
+          }
+        } catch (error) {
+          console.warn("Fullscreen is not available:", error);
+        }
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        const isFullscreen = Boolean(document.fullscreenElement);
+        fullscreenButton.textContent = isFullscreen ? "↙" : "⛶";
+        fullscreenButton.title = isFullscreen ? "Exit fullscreen" : "Fullscreen";
+        fullscreenButton.setAttribute(
+          "aria-label",
+          isFullscreen ? "Exit fullscreen" : "Open fullscreen"
+        );
+      });
+
+      window.addEventListener("resize", resizeCanvas);
+
+      resizeCanvas();
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>
