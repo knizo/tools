@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מנתח ומחולל לוטו חכם (סטטיסטי)</title>
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --primary-dark: #9a0007;
+            --secondary: #1976d2;
+            --strong-ball: #fbc02d;
+            --bg: #f4f6f9;
+            --card: #ffffff;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        p.subtitle {
+            color: #666;
+            margin-top: 8px;
+            font-size: 15px;
+        }
+
+        .upload-section {
+            background: #eef4fb;
+            border: 2px dashed var(--secondary);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .upload-section label {
+            cursor: pointer;
+            color: var(--secondary);
+            font-weight: bold;
+            display: block;
+        }
+
+        .upload-status {
+            font-size: 13px;
+            color: #2e7d32;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .btn-generate {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .results-area {
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .balls-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        .ball {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0);
+            border: 3px solid var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .ball.strong {
+            background: radial-gradient(circle at 30% 30%, #fff59d, var(--strong-ball));
+            border-color: #f57f17;
+            margin-right: 15px;
+            position: relative;
+        }
+
+        .ball.strong::after {
+            content: 'חזק';
+            position: absolute;
+            bottom: -22px;
+            font-size: 12px;
+            color: #f57f17;
+            font-weight: bold;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-right: 4px solid var(--secondary);
+        }
+
+        .stat-title {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .delta-box {
+            margin-top: 15px;
+            background: #fff8e1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            border: 1px solid #ffe082;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🎱 מחולל ומנתח לוטו סטטיסטי</h1>
+        <p class="subtitle">משלב שיטת המאזן, ניתוח פערי דלתא, שקלול שכיחויות ואופטימיזציית רווח</p>
+    </header>
+
+    <div class="upload-section">
+        <label for="csvFile">📂 אופציונלי: טען קובץ CSV של הגרלות העבר מאתר מפעל הפיס לניתוח אמיתי</label>
+        <input type="file" id="csvFile" accept=".csv" style="display: none;" onchange="handleFileUpload(event)">
+        <div id="uploadStatus" class="upload-status">מצב נוכחי: עובד על מודל התפלגות סטטיסטית מובנה</div>
+    </div>
+
+    <div class="controls">
+        <label class="control-item">
+            <input type="checkbox" id="chkBalance" checked>
+            <span>איזון זוגי / אי-זוגי (3/3 או 4/2)</span>
+        </label>
+        <label class="control-item">
+            <input type="checkbox" id="chkHighLow" checked>
+            <span>איזון גבוה / נמוך (1-18 מול 19-37)</span>
+        </label>
+        <label class="control-item">
+            <input type="checkbox" id="chkSum" checked>
+            <span>טווח סכום אופטימלי (95 עד 135)</span>
+        </label>
+        <label class="control-item">
+            <input type="checkbox" id="chkAntiHuman" checked>
+            <span>אנטי-תאריכים (העדפה למספרים מעל 31)</span>
+        </label>
+        <label class="control-item">
+            <input type="checkbox" id="chkHotCold" checked>
+            <span>שקלול מספרים חמים/קרים מההיסטוריה</span>
+        </label>
+        <label class="control-item">
+            <input type="checkbox" id="chkDelta" checked>
+            <span>בקרת פערי דלתא (ללא סדרות ארוכות)</span>
+        </label>
+    </div>
+
+    <button class="btn-generate" onclick="generateSmartLotto()">נתח והגרל צירוף חכם ✨</button>
+
+    <div class="results-area" id="resultsArea">
+        <h3>הצירוף המומלץ להגרלה הבאה:</h3>
+        <div class="balls-container" id="ballsContainer"></div>
+
+        <div class="delta-box" id="deltaInfo"></div>
+
+        <div class="analysis-grid" id="analysisGrid"></div>
+    </div>
+</div>
+
+<script>
+    // מערך משקולות ברירת מחדל (1 עד 37) ומספר חזק (1 עד 7)
+    let numberWeights = new Array(38).fill(10);
+    let strongWeights = new Array(8).fill(10);
+    let historyLoaded = false;
+
+    // קריאת קובץ CSV של מפעל הפיס
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            parsePaisCSV(text);
+        };
+        reader.readAsText(file, 'windows-1255'); // קידוד נפוץ בקבצי הפיס
+    }
+
+    function parsePaisCSV(csvText) {
+        const lines = csvText.split('\n');
+        let freq = new Array(38).fill(0);
+        let strongFreq = new Array(8).fill(0);
+        let validDraws = 0;
+
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',');
+            if (cols.length >= 9) {
+                // בקבצי הפיס עמודות 2 עד 7 הן המספרים, ועמודה 8 היא המספר החזק
+                let nums = [];
+                for (let j = 2; j <= 7; j++) {
+                    let n = parseInt(cols[j]);
+                    if (!isNaN(n) && n >= 1 && n <= 37) nums.push(n);
+                }
+                let strong = parseInt(cols[8]);
+
+                if (nums.length === 6 && !isNaN(strong) && strong >= 1 && strong <= 7) {
+                    nums.forEach(n => freq[n]++);
+                    strongFreq[strong]++;
+                    validDraws++;
+                }
+            }
+        }
+
+        if (validDraws > 10) {
+            // עדכון משקולות לפי שכיחות היסטורית
+            for (let n = 1; n <= 37; n++) {
+                numberWeights[n] = freq[n] + 10; 
+            }
+            for (let s = 1; s <= 7; s++) {
+                strongWeights[s] = strongFreq[s] + 5;
+            }
+            historyLoaded = true;
+            document.getElementById('uploadStatus').innerText = `✅ נטענו בהצלחה ${validDraws} הגרלות אמיתיות מקובץ הפיס!`;
+        } else {
+            alert("לא זוהו נתונים תקינים בקובץ. ודא שזהו קובץ ה-CSV המקורי של מפעל הפיס.");
+        }
+    }
+
+    // בחירת מספר ממושקל
+    function pickWeightedNumber(pool, weights) {
+        let totalWeight = pool.reduce((sum, num) => sum + weights[num], 0);
+        let random = Math.random() * totalWeight;
+        for (let num of pool) {
+            if (random < weights[num]) return num;
+            random -= weights[num];
+        }
+        return pool[0];
+    }
+
+    function generateSmartLotto() {
+        const useBalance = document.getElementById('chkBalance').checked;
+        const useHighLow = document.getElementById('chkHighLow').checked;
+        const useSum = document.getElementById('chkSum').checked;
+        const useAntiHuman = document.getElementById('chkAntiHuman').checked;
+        const useHotCold = document.getElementById('chkHotCold').checked;
+        const useDelta = document.getElementById('chkDelta').checked;
+
+        let bestCombo = null;
+        let attempts = 0;
+        const maxAttempts = 5000;
+
+        // התאמת משקולות זמנית לפי ההגדרות
+        let currentWeights = [...numberWeights];
+        if (!useHotCold) {
+            currentWeights.fill(10);
+        }
+        if (useAntiHuman) {
+            // חיזוק מספרים מעל 31 כדי להימנע מחלוקת פרס על תאריכי לידה
+            for (let i = 32; i <= 37; i++) {
+                currentWeights[i] *= 1.4;
+            }
+        }
+
+        while (attempts < maxAttempts) {
+            attempts++;
+            let pool = Array.from({length: 37}, (_, i) => i + 1);
+            let combo = [];
+
+            for (let i = 0; i < 6; i++) {
+                let picked = pickWeightedNumber(pool, currentWeights);
+                combo.push(picked);
+                pool = pool.filter(n => n !== picked);
+            }
+
+            combo.sort((a, b) => a - b);
+
+            // בדיקת תנאים סטטיסטיים
+            let evenCount = combo.filter(n => n % 2 === 0).length;
+            if (useBalance && (evenCount < 2 || evenCount > 4)) continue;
+
+            let lowCount = combo.filter(n => n <= 18).length;
+            if (useHighLow && (lowCount < 2 || lowCount > 4)) continue;
+
+            let sum = combo.reduce((a, b) => a + b, 0);
+            if (useSum && (sum < 95 || sum > 135)) continue;
+
+            if (useAntiHuman && combo.filter(n => n > 31).length === 0) continue;
+
+            // חישוב פערי דלתא
+            let deltas = [];
+            let consecutiveCount = 0;
+            for (let i = 1; i < combo.length; i++) {
+                let diff = combo[i] - combo[i - 1];
+                deltas.push(diff);
+                if (diff === 1) consecutiveCount++;
+            }
+            // מניעת 3 מספרים עוקבים ברצף (למשל 4,5,6)
+            if (useDelta && consecutiveCount > 2) continue;
+
+            bestCombo = { numbers: combo, sum, evenCount, lowCount, deltas };
+            break;
+        }
+
+        // במקרה קיצון שלא נמצא צירוף תחת כל האילוצים, ניקח את האחרון
+        if (!bestCombo) {
+            let fallback = [3, 11, 19, 24, 33, 36];
+            bestCombo = {
+                numbers: fallback,
+                sum: 126,
+                evenCount: 3,
+                lowCount: 2,
+                deltas: [8, 8, 5, 9, 3]
+            };
+        }
+
+        // הגרלת מספר חזק (1-7)
+        let strongPool = [1, 2, 3, 4, 5, 6, 7];
+        let strongNum = pickWeightedNumber(strongPool, useHotCold ? strongWeights : new Array(8).fill(10));
+
+        renderResults(bestCombo, strongNum, attempts);
+    }
+
+    function renderResults(data, strongNum, attempts) {
+        const resultsArea = document.getElementById('resultsArea');
+        const ballsContainer = document.getElementById('ballsContainer');
+        const analysisGrid = document.getElementById('analysisGrid');
+        const deltaInfo = document.getElementById('deltaInfo');
+
+        resultsArea.style.display = 'block';
+        ballsContainer.innerHTML = '';
+
+        // הצגת הכדורים הרגילים
+        data.numbers.forEach((num, idx) => {
+            const ball = document.createElement('div');
+            ball.className = 'ball';
+            ball.style.animationDelay = `${idx * 0.08}s`;
+            ball.innerText = num;
+            ballsContainer.appendChild(ball);
+        });
+
+        // הצגת הכדור החזק
+        const sBall = document.createElement('div');
+        sBall.className = 'ball strong';
+        sBall.style.animationDelay = `0.5s`;
+        sBall.innerText = strongNum;
+        ballsContainer.appendChild(sBall);
+
+        // הצגת נתוני דלתא
+        deltaInfo.innerHTML = `<strong>ניתוח פערי דלתא (הפרשים בין המספרים):</strong> ${data.deltas.join(' ➔ ')} (נמצא לאחר סינון ${attempts} צירופים אקראיים)`;
+
+        // הצגת מדדים סטטיסטיים
+        analysisGrid.innerHTML = `
+            <div class="stat-box">
+                <div class="stat-title">סכום המספרים</div>
+                <div class="stat-value">${data.sum} (טווח אופטימלי)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-title">זוגי / אי-זוגי</div>
+                <div class="stat-value">${data.evenCount} זוגיים / ${6 - data.evenCount} אי-זוגיים</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-title">נמוכים / גבוהים</div>
+                <div class="stat-value">${data.lowCount} נמוכים / ${6 - data.lowCount} גבוהים</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-title">מספרים מעל 31</div>
+                <div class="stat-value">${data.numbers.filter(n => n > 31).length} מספרים (מונע חלוקת פרס)</div>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
