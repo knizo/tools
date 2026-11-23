@@ -15,13 +15,38 @@ h1{font-size:28px;margin:0 0 6px}.sub{color:var(--muted);font-size:14px}.count{b
 .hero h2{font-size:23px;margin:0 0 8px}.hero p{margin:0;color:#e1e0ff;font-size:14px;line-height:1.6}.hero-icon{font-size:50px;opacity:.9;z-index:1}
 .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}.search{flex:1;position:relative;min-width:200px}.search input{width:100%;padding:14px 44px 14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;font-size:14px;outline:none;transition:.2s}.search input:focus,.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #6258e81a}.search span{position:absolute;right:16px;top:13px;color:#9aa3b5}
 button{border:0;cursor:pointer;font-weight:700;font-size:14px;transition:.18s}.add-btn{background:var(--accent);color:white;padding:14px 20px;border-radius:14px;box-shadow:0 7px 16px #6258e833}.add-btn:hover{background:#5046d4;transform:translateY(-1px)}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 5px 18px #24304d08;transition:.2s;min-width:0}.card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 5px 18px #24304d08;transition:.2s;min-width:0;cursor:pointer;text-decoration:none;color:inherit;display:block}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#d4d0ff}
 .card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.favicon{width:43px;height:43px;border-radius:13px;background:#f0efff;display:grid;place-items:center;color:var(--accent);font-size:19px;font-weight:800;flex-shrink:0;overflow:hidden}.card-title{min-width:0;flex:1}.card-title h3{font-size:16px;margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-title small{font-size:12px;color:var(--muted);direction:ltr;display:block;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-desc{font-size:13px;color:#68738a;line-height:1.55;min-height:20px;margin:0 0 16px;overflow-wrap:anywhere}.card-actions{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #f0f2f7;padding-top:13px}.visit{color:var(--accent);text-decoration:none;font-size:13px;font-weight:700}.visit:hover{text-decoration:underline}.delete{background:#fff0f1;color:var(--danger);padding:8px 11px;border-radius:10px;font-size:12px}.delete:hover{background:#ffe1e4}
+.card-desc{font-size:13px;color:#68738a;line-height:1.55;min-height:20px;margin:0;overflow-wrap:anywhere}
 .empty{grid-column:1/-1;text-align:center;padding:55px 20px;background:#fff;border:1px dashed #d9deea;border-radius:20px;color:var(--muted)}.empty b{display:block;color:var(--ink);font-size:17px;margin:10px 0 6px}
-.modal-backdrop{position:fixed;inset:0;background:#12182b80;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal-backdrop.show{display:flex}.modal{width:min(460px,100%);background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #10162c55}.modal h2{margin:0 0 7px;font-size:21px}.modal p{margin:0 0 20px;color:var(--muted);font-size:13px}.field{margin-bottom:14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:14px;outline:none}.modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions button{flex:1;padding:13px;border-radius:12px}.save{background:var(--accent);color:white}.cancel{background:#f1f3f8;color:#59647a}.toast{position:fixed;bottom:24px;left:24px;background:#202943;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}
+.modal-backdrop{position:fixed;inset:0;background:#12182b80;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal-backdrop.show{display:flex}.modal{width:min(460px,100%);background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #10162c55}.modal h2{margin:0 0 7px;font-size:21px}.modal p{margin:0 0 20px;color:var(--muted);font-size:13px}.field{margin-bottom:14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:14px;outline:none}.modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions button{flex:1;padding:13px;border-radius:12px}.save{background:var(--accent);color:white}.cancel{background:#f1f3f8;color:#59647a}.toast{position:fixed;bottom:24px;left:24px;background:#202943;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:10}.toast.show{opacity:1;transform:translateY(0)}
 footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){.wrap{padding:25px 15px 45px}.top{align-items:flex-start}.hero{padding:23px}.hero-icon{font-size:38px}.hero h2{font-size:20px}.toolbar{flex-wrap:wrap}.search{flex-basis:100%}.add-btn{width:100%}.grid{grid-template-columns:1fr}h1{font-size:24px}}
+
+/* שעון בפינה השמאלית */
+.clock-box{
+  position:fixed;
+  bottom:22px;
+  left:22px;
+  background:#1e2438;
+  color:#fff;
+  padding:10px 16px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:600;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+  z-index:20;
+  direction:ltr;
+  text-align:center;
+  line-height:1.45;
+  min-width:130px;
+}
+.clock-box .time{font-size:18px;letter-spacing:0.5px}
+.clock-box .date{font-size:12px;opacity:.75;margin-top:2px}
+
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.wrap{padding:25px 15px 45px}.top{align-items:flex-start}.hero{padding:23px}.hero-icon{font-size:38px}.hero h2{font-size:20px}.toolbar{flex-wrap:wrap}.search{flex-basis:100%}.add-btn{width:100%}.grid{grid-template-columns:1fr}h1{font-size:24px}.clock-box{bottom:14px;left:14px;padding:8px 12px;font-size:13px}.clock-box .time{font-size:16px}}
 </style>
 </head>
 <body>
@@ -41,6 +66,12 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
   <section class="grid" id="grid" aria-live="polite"></section>
   <footer>המקור העיקרי של הקישורים הוא קובץ <code>links.json</code> ב-GitHub. שינויים מקומיים נשמרים רק בדפדפן.</footer>
 </main>
+
+<!-- שעון -->
+<div class="clock-box" id="clockBox">
+  <div class="time" id="clockTime">--:--:--</div>
+  <div class="date" id="clockDate">--/--/----</div>
+</div>
 
 <div class="modal-backdrop" id="backdrop">
   <form class="modal" id="linkForm">
@@ -87,9 +118,8 @@ function render() {
   }
 
   grid.innerHTML = filtered.map(x => {
-    const i = links.indexOf(x);
     const host = domain(x.url);
-    return `<article class="card">
+    return `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">
       <div class="card-head">
         <div class="favicon">🌐</div>
         <div class="card-title">
@@ -98,11 +128,7 @@ function render() {
         </div>
       </div>
       <p class="card-desc">${esc(x.description || ' ')}</p>
-      <div class="card-actions">
-        <a class="visit" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">פתח אתר ↗</a>
-        <button class="delete" data-delete="${i}" aria-label="מחק ${esc(x.name)}">מחק קישור</button>
-      </div>
-    </article>`;
+    </a>`;
   }).join('');
 }
 
@@ -172,25 +198,23 @@ async function loadFromJson(showToast = true) {
   }
 }
 
+// ===== שעון =====
+function updateClock() {
+  const now = new Date();
+  const time = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const date = now.toLocaleDateString('he-IL', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+  document.getElementById('clockTime').textContent = time;
+  document.getElementById('clockDate').textContent = date;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// אירועים
 document.getElementById('openModal').addEventListener('click', open);
 document.getElementById('closeModal').addEventListener('click', close);
 backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 search.addEventListener('input', render);
-
-grid.addEventListener('click', e => {
-  const btn = e.target.closest('[data-delete]');
-  if (!btn) return;
-  const i = Number(btn.dataset.delete);
-  const name = links[i]?.name;
-  if (!Number.isInteger(i) || !links[i]) return;
-  if (confirm(`למחוק את הקישור "${name}"?`)) {
-    links.splice(i, 1);
-    saveLocal();
-    render();
-    toast('הקישור נמחק (רק מקומית)');
-  }
-});
 
 form.addEventListener('submit', e => {
   e.preventDefault();
