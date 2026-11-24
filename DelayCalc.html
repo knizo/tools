@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מחשבון חריגה מלוח זמנים</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --success: #16a34a;
+      --success-bg: #f0fdf4;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      margin: 0 0 6px 0;
+      font-size: 1.75rem;
+      color: #0f172a;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .grid-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    input[type="date"],
+    input[type="number"],
+    select {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      width: 100%;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .quick-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .quick-buttons span {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    button {
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: #e2e8f0;
+    }
+
+    button.primary-btn {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    button.primary-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .kpi-card.highlight-danger {
+      background: var(--danger-bg);
+      border-color: #fecaca;
+    }
+
+    .kpi-card.highlight-success {
+      background: var(--success-bg);
+      border-color: #bbf7d0;
+    }
+
+    .kpi-title {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .highlight-danger .kpi-value {
+      color: var(--danger);
+    }
+
+    .highlight-success .kpi-value {
+      color: var(--success);
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .breakdown-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 0.92rem;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .breakdown-row:last-child {
+      border-bottom: none;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding-top: 10px;
+      color: #0f172a;
+    }
+
+    .timeline-bar-wrapper {
+      margin-top: 16px;
+    }
+
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .timeline-bar {
+      height: 18px;
+      width: 100%;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .bar-contract {
+      background: #3b82f6;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .bar-deducted {
+      background: #f59e0b;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .bar-chargeable {
+      background: #ef4444;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>מחשבון חריגה מלוח זמנים</h1>
+      <p>חישוב ימי איחור ועלות פיצוי מוסכם מעבר לתקופת החוזה</p>
+    </header>
+
+    <div class="card">
+      <div class="grid-inputs">
+        <div class="form-group">
+          <label for="startDate">תאריך תחילת עבודה</label>
+          <input type="date" id="startDate" value="2025-11-19" />
+        </div>
+
+        <div class="form-group">
+          <label for="durationMonths">משך הפרויקט (בחודשים)</label>
+          <input type="number" id="durationMonths" value="11" min="1" max="120" />
+        </div>
+
+        <div class="form-group">
+          <label for="targetDate">תאריך סיום בפועל / לבדיקה</label>
+          <input type="date" id="targetDate" value="2026-11-16" />
+        </div>
+
+        <div class="form-group">
+          <label for="dailyRate">עלות יום איחור (₪)</label>
+          <input type="number" id="dailyRate" value="267" min="0" step="1" />
+        </div>
+
+        <div class="form-group">
+          <label for="weekendRule">הפחתת סופי שבוע מהאיחור</label>
+          <select id="weekendRule">
+            <option value="none">ללא הפחתה (כל הימים הקלנדריים)</option>
+            <option value="saturday">הפחתת ימי שבת בלבד</option>
+            <option value="fri_sat">הפחתת ימי שישי ושבת</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="approvedDays">ימי עיכוב מאושרים (לקיזוז)</label>
+          <input type="number" id="approvedDays" value="0" min="0" step="1" />
+        </div>
+      </div>
+
+      <div class="quick-buttons">
+        <span>קיצורי דרך לתאריך הבדיקה:</span>
+        <button type="button" onclick="adjustTargetDays(1)">+1 יום</button>
+        <button type="button" onclick="adjustTargetDays(7)">+7 ימים</button>
+        <button type="button" onclick="adjustTargetDays(30)">+30 ימים</button>
+        <button type="button" class="primary-btn" onclick="setTargetToday()">היום</button>
+        <button type="button" onclick="resetDefaults()">איפוס נתונים</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">תאריך סיום חוזי</div>
+        <div class="kpi-value" id="kpiDeadline">--/--/----</div>
+        <div class="kpi-sub" id="kpiDurationSub">לאחר 11 חודשים</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">ימי איחור ברוטו</div>
+        <div class="kpi-value" id="kpiGrossDays">0</div>
+        <div class="kpi-sub">ימים קלנדריים מעבר ליעד</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-title">ימי איחור נטו לחיוב</div>
+        <div class="kpi-value" id="kpiChargeableDays">0</div>
+        <div class="kpi-sub" id="kpiDeductedSub">קוזזו 0 ימים</div>
+      </div>
+
+      <div class="kpi-card highlight-danger" id="kpiCostCard">
+        <div class="kpi-title">סה״כ עלות חריגה</div>
+        <div class="kpi-value" id="kpiTotalCost">0 ₪</div>
+        <div class="kpi-sub" id="kpiRateSub">לפי 267 ₪ ליום</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="breakdown-box">
+        <div class="breakdown-row">
+          <span>ימים קלנדריים מעבר לתאריך הסיום החוזי:</span>
+          <span id="bdGross">0 ימים</span>
+        </div>
+        <div class="breakdown-row">
+          <span>הפחתת סופי שבוע (שבתות / שישי-שבת):</span>
+          <span id="bdWeekends">0 ימים</span>
+        </div>
+        <div class="breakdown-row">
+          <span>הפחתת ימי עיכוב מאושרים:</span>
+          <span id="bdApproved">0 ימים</span>
+        </div>
+        <div class="breakdown-row">
+          <span>סה״כ ימים לחיוב × תעריף יומי:</span>
+          <span id="bdFormula">0 × 267 ₪ = 0 ₪</span>
+        </div>
+      </div>
+
+      <div class="timeline-bar-wrapper">
+        <div class="timeline-labels">
+          <span id="lblStart">התחלה: --</span>
+          <span id="lblDeadline">יעד חוזי: --</span>
+          <span id="lblTarget">בדיקה: --</span>
+        </div>
+        <div class="timeline-bar">
+          <div class="bar-contract" id="barContract" style="width: 100%"></div>
+          <div class="bar-deducted" id="barDeducted" style="width: 0%"></div>
+          <div class="bar-chargeable" id="barChargeable" style="width: 0%"></div>
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="dot" style="background:#3b82f6"></span>תקופת החוזה</div>
+          <div class="legend-item"><span class="dot" style="background:#f59e0b"></span>ימי איחור שקוזזו</div>
+          <div class="legend-item"><span class="dot" style="background:#ef4444"></span>ימי איחור לחיוב</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function parseDateLocal(dateStr) {
+      if (!dateStr) return null;
+      const [y, m, d] = dateStr.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    function formatDateIL(dateObj) {
+      if (!dateObj || isNaN(dateObj)) return "--/--/----";
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const y = dateObj.getFullYear();
+      return `${d}.${m}.${y}`;
+    }
+
+    function toInputFormat(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function addMonths(dateObj, months) {
+      const result = new Date(dateObj.getTime());
+      const targetMonth = result.getMonth() + months;
+      result.setMonth(targetMonth);
+      // טיפול במקרה של סוף חודש (למשל 31 בחודש)
+      if (result.getMonth() !== ((targetMonth % 12) + 12) % 12) {
+        result.setDate(0);
+      }
+      return result;
+    }
+
+    function countExcludedWeekendDays(deadlineDate, targetDate, rule) {
+      if (rule === "none" || targetDate <= deadlineDate) return 0;
+      let count = 0;
+      const cursor = new Date(deadlineDate.getTime());
+      cursor.setDate(cursor.getDate() + 1); // מתחילים לספור מהיום הראשון של האיחור
+
+      while (cursor <= targetDate) {
+        const dayOfWeek = cursor.getDay(); // 5 = שישי, 6 = שבת
+        if (rule === "saturday" && dayOfWeek === 6) {
+          count++;
+        } else if (rule === "fri_sat" && (dayOfWeek === 5 || dayOfWeek === 6)) {
+          count++;
+        }
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      return count;
+    }
+
+    function calculate() {
+      const startStr = document.getElementById("startDate").value;
+      const durationMonths = parseInt(document.getElementById("durationMonths").value, 10) || 0;
+      const targetStr = document.getElementById("targetDate").value;
+      const dailyRate = parseFloat(document.getElementById("dailyRate").value) || 0;
+      const weekendRule = document.getElementById("weekendRule").value;
+      const approvedDays = Math.max(0, parseInt(document.getElementById("approvedDays").value, 10) || 0);
+
+      const startDate = parseDateLocal(startStr);
+      const targetDate = parseDateLocal(targetStr);
+
+      if (!startDate || !targetDate) return;
+
+      const deadlineDate = addMonths(startDate, durationMonths);
+      const msPerDay = 1000 * 60 * 60 * 24;
+
+      const contractTotalDays = Math.max(1, Math.round((deadlineDate - startDate) / msPerDay));
+      const grossDelayDays = Math.max(0, Math.round((targetDate - deadlineDate) / msPerDay));
+      const weekendDeducted = countExcludedWeekendDays(deadlineDate, targetDate, weekendRule);
+
+      const maxDeductible = Math.max(0, grossDelayDays - weekendDeducted);
+      const effectiveApprovedDeducted = Math.min(approvedDays, maxDeductible);
+      const totalDeducted = weekendDeducted + effectiveApprovedDeducted;
+
+      const chargeableDays = Math.max(0, grossDelayDays - totalDeducted);
+      const totalCost = chargeableDays * dailyRate;
+
+      // עדכון כרטיסי KPI
+      document.getElementById("kpiDeadline").textContent = formatDateIL(deadlineDate);
+      document.getElementById("kpiDurationSub").textContent = `לאחר ${durationMonths} חודשים`;
+      document.getElementById("kpiGrossDays").textContent = grossDelayDays.toLocaleString("he-IL");
+      document.getElementById("kpiChargeableDays").textContent = chargeableDays.toLocaleString("he-IL");
+      document.getElementById("kpiDeductedSub").textContent = `קוזזו ${totalDeducted.toLocaleString("he-IL")} ימים`;
+      document.getElementById("kpiTotalCost").textContent = `${totalCost.toLocaleString("he-IL")} ₪`;
+      document.getElementById("kpiRateSub").textContent = `לפי ${dailyRate.toLocaleString("he-IL")} ₪ ליום`;
+
+      const costCard = document.getElementById("kpiCostCard");
+      if (totalCost > 0) {
+        costCard.className = "kpi-card highlight-danger";
+      } else {
+        costCard.className = "kpi-card highlight-success";
+      }
+
+      // עדכון פירוט החישוב
+      document.getElementById("bdGross").textContent = `${grossDelayDays.toLocaleString("he-IL")} ימים`;
+      document.getElementById("bdWeekends").textContent = `-${weekendDeducted.toLocaleString("he-IL")} ימים`;
+      document.getElementById("bdApproved").textContent = `-${effectiveApprovedDeducted.toLocaleString("he-IL")} ימים`;
+      document.getElementById("bdFormula").textContent =
+        `${chargeableDays.toLocaleString("he-IL")} × ${dailyRate.toLocaleString("he-IL")} ₪ = ${totalCost.toLocaleString("he-IL")} ₪`;
+
+      // עדכון ציר הזמן הוויזואלי
+      document.getElementById("lblStart").textContent = `התחלה: ${formatDateIL(startDate)}`;
+      document.getElementById("lblDeadline").textContent = `יעד חוזי: ${formatDateIL(deadlineDate)}`;
+      document.getElementById("lblTarget").textContent = `בדיקה: ${formatDateIL(targetDate)}`;
+
+      const totalSpan = contractTotalDays + grossDelayDays;
+      const pctContract = (contractTotalDays / totalSpan) * 100;
+      const pctDeducted = (totalDeducted / totalSpan) * 100;
+      const pctChargeable = (chargeableDays / totalSpan) * 100;
+
+      document.getElementById("barContract").style.width = `${pctContract}%`;
+      document.getElementById("barDeducted").style.width = `${pctDeducted}%`;
+      document.getElementById("barChargeable").style.width = `${pctChargeable}%`;
+    }
+
+    function adjustTargetDays(days) {
+      const targetInput = document.getElementById("targetDate");
+      const current = parseDateLocal(targetInput.value) || new Date();
+      current.setDate(current.getDate() + days);
+      targetInput.value = toInputFormat(current);
+      calculate();
+    }
+
+    function setTargetToday() {
+      const today = new Date();
+      document.getElementById("targetDate").value = toInputFormat(today);
+      calculate();
+    }
+
+    function resetDefaults() {
+      document.getElementById("startDate").value = "2025-11-19";
+      document.getElementById("durationMonths").value = "11";
+      document.getElementById("targetDate").value = toInputFormat(new Date());
+      document.getElementById("dailyRate").value = "267";
+      document.getElementById("weekendRule").value = "none";
+      document.getElementById("approvedDays").value = "0";
+      calculate();
+    }
+
+    // האזנה לכל שינוי בשדות
+    ["startDate", "durationMonths", "targetDate", "dailyRate", "weekendRule", "approvedDays"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", calculate);
+      document.getElementById(id).addEventListener("change", calculate);
+    });
+
+    // הפעלה ראשונית
+    calculate();
+  </script>
+</body>
+</html>
