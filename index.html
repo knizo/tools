@@ -25,7 +25,6 @@ button{border:0;cursor:pointer;font-weight:700;font-size:14px;transition:.18s}.a
 .toast{position:fixed;bottom:24px;left:24px;background:#202943;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:10}.toast.show{opacity:1;transform:translateY(0)}
 footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
 
-/* שעון */
 .clock-box{position:fixed;bottom:22px;left:22px;background:#1e2438;color:#fff;padding:10px 16px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:20;direction:ltr;text-align:center;line-height:1.45;min-width:130px}
 .clock-box .time{font-size:18px;letter-spacing:0.5px}
 .clock-box .date{font-size:12px;opacity:.75;margin-top:2px}
@@ -41,10 +40,15 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
   text-align:center;box-shadow:0 25px 60px rgba(0,0,0,.35);
 }
 .lock-card h2{margin:0 0 8px;font-size:22px;color:#182235}
-.lock-card p{margin:0 0 22px;color:#778198;font-size:14px;line-height:1.5}
-#qrcode{display:flex;justify-content:center;margin:0 auto 18px;padding:12px;background:#f8f9ff;border-radius:16px}
-.unlock-info{font-size:12px;color:#9aa3b5;margin-top:12px}
-.manual-unlock{margin-top:18px;padding-top:16px;border-top:1px solid #eee}
+.lock-card p{margin:0 0 18px;color:#778198;font-size:14px;line-height:1.5}
+#qrcode{
+  display:flex;justify-content:center;align-items:center;
+  margin:0 auto 16px;padding:14px;background:#f8f9ff;
+  border-radius:16px;min-height:220px;
+}
+#qrcode img, #qrcode canvas{border-radius:8px;}
+.unlock-info{font-size:12px;color:#9aa3b5;margin-top:8px}
+.manual-unlock{margin-top:16px;padding-top:16px;border-top:1px solid #eee}
 .manual-unlock input{width:100%;padding:11px 13px;border:1px solid #e0e4ef;border-radius:10px;font-size:14px;margin-bottom:10px;outline:none;text-align:center}
 .manual-unlock button{width:100%;padding:12px;background:var(--accent);color:#fff;border-radius:10px;font-weight:700}
 
@@ -101,12 +105,12 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
 </div>
 <div class="toast" id="toast"></div>
 
-<!-- ספריית QR -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<!-- ספריית QR יציבה -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
 /* ========== הגדרות אבטחה - שנה את זה! ========== */
-const ACCESS_SECRET = 'ABCDefgh';   // ← שנה לקוד סודי משלך
+const ACCESS_SECRET = '123456';   // ← שנה לקוד סודי משלך
 const ACCESS_KEY = 'links_dashboard_access_v1';
 /* ================================================ */
 
@@ -140,7 +144,6 @@ function checkUnlockFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const unlock = params.get('unlock');
   if (unlock && unlock === ACCESS_SECRET) {
-    // מנקים את הפרמטר מהכתובת
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, document.title, cleanUrl);
     grantAccess();
@@ -151,22 +154,18 @@ function checkUnlockFromUrl() {
 }
 
 function showLockScreen() {
-  // יצירת קישור הפתיחה
   const unlockUrl = window.location.origin + window.location.pathname + '?unlock=' + encodeURIComponent(ACCESS_SECRET);
-  
-  // יצירת QR
   const qrContainer = document.getElementById('qrcode');
   qrContainer.innerHTML = '';
-  QRCode.toCanvas(document.createElement('canvas'), unlockUrl, {
+
+  // יצירת QR עם הספרייה היציבה
+  new QRCode(qrContainer, {
+    text: unlockUrl,
     width: 200,
-    margin: 2,
-    color: { dark: '#1a1f36', light: '#ffffff' }
-  }, function (err, canvas) {
-    if (err) {
-      qrContainer.textContent = 'שגיאה ביצירת QR';
-      return;
-    }
-    qrContainer.appendChild(canvas);
+    height: 200,
+    colorDark: "#1a1f36",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
   });
 }
 
@@ -185,7 +184,7 @@ document.getElementById('manualCode').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('manualUnlockBtn').click();
 });
 
-// ===== שאר הפונקציות של האתר =====
+// ===== שאר הפונקציות =====
 function saveLocal() {
   localStorage.setItem(KEY, JSON.stringify(links));
 }
@@ -308,7 +307,7 @@ form.addEventListener('submit', e => {
 
 // ===== התחלה =====
 if (checkUnlockFromUrl()) {
-  // כבר טיפלנו בגישה
+  // כבר טופל
 } else if (isUnlocked()) {
   grantAccess();
 } else {
