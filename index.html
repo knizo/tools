@@ -18,39 +18,57 @@ button{border:0;cursor:pointer;font-weight:700;font-size:14px;transition:.18s}.a
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 5px 18px #24304d08;transition:.2s;min-width:0;cursor:pointer;text-decoration:none;color:inherit;display:block}
 .card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#d4d0ff}
-.card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.favicon{width:43px;height:43px;border-radius:13px;background:#f0efff;display:grid;place-items:center;color:var(--accent);font-size:19px;font-weight:800;flex-shrink:0;overflow:hidden}.card-title{min-width:0;flex:1}.card-title h3{font-size:16px;margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-title small{font-size:12px;color:var(--muted);direction:ltr;display:block;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.favicon{width:43px;height:43px;border-radius:13px;background:#f0efff;display:grid;place-items:center;color:var(--accent);font-size:19px;font-weight:800;flex-shrink:0}.card-title{min-width:0;flex:1}.card-title h3{font-size:16px;margin:0 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-title small{font-size:12px;color:var(--muted);direction:ltr;display:block;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card-desc{font-size:13px;color:#68738a;line-height:1.55;min-height:20px;margin:0;overflow-wrap:anywhere}
 .empty{grid-column:1/-1;text-align:center;padding:55px 20px;background:#fff;border:1px dashed #d9deea;border-radius:20px;color:var(--muted)}.empty b{display:block;color:var(--ink);font-size:17px;margin:10px 0 6px}
-.modal-backdrop{position:fixed;inset:0;background:#12182b80;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal-backdrop.show{display:flex}.modal{width:min(460px,100%);background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #10162c55}.modal h2{margin:0 0 7px;font-size:21px}.modal p{margin:0 0 20px;color:var(--muted);font-size:13px}.field{margin-bottom:14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:14px;outline:none}.modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions button{flex:1;padding:13px;border-radius:12px}.save{background:var(--accent);color:white}.cancel{background:#f1f3f8;color:#59647a}.toast{position:fixed;bottom:24px;left:24px;background:#202943;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:10}.toast.show{opacity:1;transform:translateY(0)}
+.modal-backdrop{position:fixed;inset:0;background:#12182b80;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal-backdrop.show{display:flex}.modal{width:min(460px,100%);background:#fff;border-radius:22px;padding:25px;box-shadow:0 25px 80px #10162c55}.modal h2{margin:0 0 7px;font-size:21px}.modal p{margin:0 0 20px;color:var(--muted);font-size:13px}.field{margin-bottom:14px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.field input{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:14px;outline:none}.modal-actions{display:flex;gap:10px;margin-top:20px}.modal-actions button{flex:1;padding:13px;border-radius:12px}.save{background:var(--accent);color:white}.cancel{background:#f1f3f8;color:#59647a}
+.toast{position:fixed;bottom:24px;left:24px;background:#202943;color:#fff;padding:12px 17px;border-radius:12px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:10}.toast.show{opacity:1;transform:translateY(0)}
 footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
 
-/* שעון בפינה השמאלית */
-.clock-box{
-  position:fixed;
-  bottom:22px;
-  left:22px;
-  background:#1e2438;
-  color:#fff;
-  padding:10px 16px;
-  border-radius:14px;
-  font-size:14px;
-  font-weight:600;
-  box-shadow:0 8px 24px rgba(0,0,0,.18);
-  z-index:20;
-  direction:ltr;
-  text-align:center;
-  line-height:1.45;
-  min-width:130px;
-}
+/* שעון */
+.clock-box{position:fixed;bottom:22px;left:22px;background:#1e2438;color:#fff;padding:10px 16px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:20;direction:ltr;text-align:center;line-height:1.45;min-width:130px}
 .clock-box .time{font-size:18px;letter-spacing:0.5px}
 .clock-box .date{font-size:12px;opacity:.75;margin-top:2px}
+
+/* מסך נעילה */
+#lockScreen{
+  position:fixed;inset:0;background:linear-gradient(145deg,#1a1f36,#2d2a5a 50%,#3f37a0);
+  display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;
+}
+#lockScreen.hidden{display:none}
+.lock-card{
+  background:#fff;border-radius:24px;padding:36px 32px;max-width:380px;width:100%;
+  text-align:center;box-shadow:0 25px 60px rgba(0,0,0,.35);
+}
+.lock-card h2{margin:0 0 8px;font-size:22px;color:#182235}
+.lock-card p{margin:0 0 22px;color:#778198;font-size:14px;line-height:1.5}
+#qrcode{display:flex;justify-content:center;margin:0 auto 18px;padding:12px;background:#f8f9ff;border-radius:16px}
+.unlock-info{font-size:12px;color:#9aa3b5;margin-top:12px}
+.manual-unlock{margin-top:18px;padding-top:16px;border-top:1px solid #eee}
+.manual-unlock input{width:100%;padding:11px 13px;border:1px solid #e0e4ef;border-radius:10px;font-size:14px;margin-bottom:10px;outline:none;text-align:center}
+.manual-unlock button{width:100%;padding:12px;background:var(--accent);color:#fff;border-radius:10px;font-weight:700}
 
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.wrap{padding:25px 15px 45px}.top{align-items:flex-start}.hero{padding:23px}.hero-icon{font-size:38px}.hero h2{font-size:20px}.toolbar{flex-wrap:wrap}.search{flex-basis:100%}.add-btn{width:100%}.grid{grid-template-columns:1fr}h1{font-size:24px}.clock-box{bottom:14px;left:14px;padding:8px 12px;font-size:13px}.clock-box .time{font-size:16px}}
 </style>
 </head>
 <body>
-<main class="wrap">
+
+<!-- מסך נעילה -->
+<div id="lockScreen">
+  <div class="lock-card">
+    <h2>🔒 כניסה מאובטחת</h2>
+    <p>סרוק את קוד ה-QR עם הטלפון כדי להיכנס לדף</p>
+    <div id="qrcode"></div>
+    <div class="unlock-info">או הזן את קוד הגישה ידנית:</div>
+    <div class="manual-unlock">
+      <input type="password" id="manualCode" placeholder="קוד גישה" autocomplete="off">
+      <button type="button" id="manualUnlockBtn">כניסה</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="mainContent" style="display:none">
   <header class="top">
     <div class="brand"><div class="logo">↗</div><div><h1>הקישורים שלי</h1><div class="sub">כל האתרים החשובים שלך, במקום אחד</div></div></div>
     <div class="count" id="count">טוען...</div>
@@ -64,11 +82,10 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
     <button class="add-btn" id="openModal">＋ הוסף קישור חדש</button>
   </section>
   <section class="grid" id="grid" aria-live="polite"></section>
-  <footer>המקור העיקרי של הקישורים הוא קובץ <code>links.json</code> ב-GitHub. שינויים מקומיים נשמרים רק בדפדפן.</footer>
+  <footer>המקור העיקרי של הקישורים הוא קובץ <code>links.json</code> ב-GitHub.</footer>
 </main>
 
-<!-- שעון -->
-<div class="clock-box" id="clockBox">
+<div class="clock-box" id="clockBox" style="display:none">
   <div class="time" id="clockTime">--:--:--</div>
   <div class="date" id="clockDate">--/--/----</div>
 </div>
@@ -84,17 +101,91 @@ footer{text-align:center;color:#9aa3b5;font-size:12px;margin-top:28px}
 </div>
 <div class="toast" id="toast"></div>
 
+<!-- ספריית QR -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
 <script>
+/* ========== הגדרות אבטחה - שנה את זה! ========== */
+const ACCESS_SECRET = 'ABCDefgh';   // ← שנה לקוד סודי משלך
+const ACCESS_KEY = 'links_dashboard_access_v1';
+/* ================================================ */
+
 const KEY = 'my-links-dashboard-v1';
 const JSON_URL = 'links.json';
-
 let links = [];
 
 const grid = document.getElementById('grid');
 const search = document.getElementById('search');
 const backdrop = document.getElementById('backdrop');
 const form = document.getElementById('linkForm');
+const lockScreen = document.getElementById('lockScreen');
+const mainContent = document.getElementById('mainContent');
+const clockBox = document.getElementById('clockBox');
 
+function isUnlocked() {
+  return localStorage.getItem(ACCESS_KEY) === 'granted';
+}
+
+function grantAccess() {
+  localStorage.setItem(ACCESS_KEY, 'granted');
+  lockScreen.classList.add('hidden');
+  mainContent.style.display = 'block';
+  clockBox.style.display = 'block';
+  loadFromJson(false);
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+function checkUnlockFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const unlock = params.get('unlock');
+  if (unlock && unlock === ACCESS_SECRET) {
+    // מנקים את הפרמטר מהכתובת
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+    grantAccess();
+    toast('הכניסה אושרה בהצלחה');
+    return true;
+  }
+  return false;
+}
+
+function showLockScreen() {
+  // יצירת קישור הפתיחה
+  const unlockUrl = window.location.origin + window.location.pathname + '?unlock=' + encodeURIComponent(ACCESS_SECRET);
+  
+  // יצירת QR
+  const qrContainer = document.getElementById('qrcode');
+  qrContainer.innerHTML = '';
+  QRCode.toCanvas(document.createElement('canvas'), unlockUrl, {
+    width: 200,
+    margin: 2,
+    color: { dark: '#1a1f36', light: '#ffffff' }
+  }, function (err, canvas) {
+    if (err) {
+      qrContainer.textContent = 'שגיאה ביצירת QR';
+      return;
+    }
+    qrContainer.appendChild(canvas);
+  });
+}
+
+// כניסה ידנית
+document.getElementById('manualUnlockBtn').addEventListener('click', () => {
+  const code = document.getElementById('manualCode').value.trim();
+  if (code === ACCESS_SECRET) {
+    grantAccess();
+    toast('הכניסה אושרה');
+  } else {
+    toast('קוד שגוי');
+  }
+});
+
+document.getElementById('manualCode').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('manualUnlockBtn').click();
+});
+
+// ===== שאר הפונקציות של האתר =====
 function saveLocal() {
   localStorage.setItem(KEY, JSON.stringify(links));
 }
@@ -155,61 +246,39 @@ function close() {
 
 async function loadFromJson(showToast = true) {
   try {
-    const res = await fetch(JSON_URL + '?t=' + Date.now(), {
-      cache: 'no-store'
-    });
-
-    if (!res.ok) {
-      throw new Error(`שגיאה ${res.status} – הקובץ links.json לא נמצא`);
-    }
-
+    const res = await fetch(JSON_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('לא נמצא links.json');
     const data = await res.json();
-
-    if (!Array.isArray(data)) {
-      throw new Error('הקובץ links.json לא בפורמט מערך תקין');
-    }
-
+    if (!Array.isArray(data)) throw new Error('פורמט לא תקין');
     links = data;
     saveLocal();
     render();
-
     if (showToast) toast('הקישורים עודכנו מ-links.json');
-    console.log('נטען בהצלחה מ-links.json:', links.length, 'קישורים');
-
   } catch (err) {
-    console.error('שגיאה בטעינת links.json:', err);
-
+    console.error(err);
     try {
       const local = JSON.parse(localStorage.getItem(KEY));
       if (Array.isArray(local) && local.length) {
         links = local;
         render();
-        toast('לא הצלחתי לטעון את links.json – מציג גרסה מקומית');
+        toast('נטען מהזיכרון המקומי');
       } else {
         links = [];
         render();
-        toast('לא נמצא links.json ואין נתונים מקומיים');
       }
     } catch {
       links = [];
       render();
-      toast('שגיאה בטעינת הקישורים');
     }
   }
 }
 
-// ===== שעון =====
 function updateClock() {
   const now = new Date();
-  const time = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  const date = now.toLocaleDateString('he-IL', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
-  document.getElementById('clockTime').textContent = time;
-  document.getElementById('clockDate').textContent = date;
+  document.getElementById('clockTime').textContent = now.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('clockDate').textContent = now.toLocaleDateString('he-IL', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
 }
-updateClock();
-setInterval(updateClock, 1000);
 
-// אירועים
 document.getElementById('openModal').addEventListener('click', open);
 document.getElementById('closeModal').addEventListener('click', close);
 backdrop.addEventListener('click', e => { if (e.target === backdrop) close(); });
@@ -237,7 +306,14 @@ form.addEventListener('submit', e => {
   toast('הקישור נוסף (רק מקומית)');
 });
 
-loadFromJson(false);
+// ===== התחלה =====
+if (checkUnlockFromUrl()) {
+  // כבר טיפלנו בגישה
+} else if (isUnlocked()) {
+  grantAccess();
+} else {
+  showLockScreen();
+}
 </script>
 </body>
 </html>
