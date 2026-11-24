@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מנתח לוטו חכם משולב AI</title>
+    <title>מנתח לוטו חכם משולב AI (סריקת מודלים חינמיים אוטומטית)</title>
     <style>
         :root {
             --primary: #d32f2f;
@@ -15,63 +15,250 @@
             --text: #2c3e50;
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { max-width: 850px; width: 100%; background: var(--card); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; }
+        .container { max-width: 920px; width: 100%; background: var(--card); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); padding: 30px; }
         header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 25px; }
         h1 { margin: 0; color: var(--primary); font-size: 28px; }
         p.subtitle { color: #666; margin-top: 8px; font-size: 15px; }
-        .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        @media (max-width: 600px) { .setup-grid { grid-template-columns: 1fr; } }
-        .box-card { background: #eef4fb; border: 2px dashed var(--secondary); border-radius: 12px; padding: 15px; text-align: center; }
-        .box-card.ai-box { background: #f3e5f5; border-color: var(--ai-color); }
-        .box-card label { cursor: pointer; font-weight: bold; display: block; margin-bottom: 8px; }
-        input[type="password"] { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; text-align: left; direction: ltr; }
-        .status-text { font-size: 12px; margin-top: 6px; font-weight: bold; color: #2e7d32; }
+        .setup-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 15px; margin-bottom: 25px; }
+        @media (max-width: 720px) { .setup-grid { grid-template-columns: 1fr; } }
+        .box-card { background: #eef4fb; border: 2px dashed var(--secondary); border-radius: 12px; padding: 18px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .box-card.ai-box { background: #f3e5f5; border-color: var(--ai-color); text-align: right; }
+        .box-card label.title-lbl { font-weight: bold; display: block; margin-bottom: 10px; font-size: 15px; }
+        
+        .form-row { margin-bottom: 10px; }
+        .form-row label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; color: #4a148c; }
+        select, input[type="password"], input[type="text"] { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #ce93d8; border-radius: 6px; font-size: 14px; background: white; }
+        input[type="password"], input.ltr-input { text-align: left; direction: ltr; }
+        
+        .scan-btn {
+            background: #00897b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 6px;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .scan-btn:hover { background: #00695c; }
+
+        .models-badge {
+            font-size: 12px;
+            color: #00695c;
+            background: #e0f2f1;
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-top: 8px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .status-text { font-size: 12px; margin-top: 8px; font-weight: bold; color: #2e7d32; }
         .btn-group { display: flex; gap: 15px; margin-bottom: 25px; }
+        @media (max-width: 600px) { .btn-group { flex-direction: column; } }
         .btn { flex: 1; padding: 16px; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: transform 0.1s; }
         .btn:hover { transform: translateY(-2px); }
         .btn-stat { background: linear-gradient(135deg, var(--primary), #9a0007); }
         .btn-ai { background: linear-gradient(135deg, var(--ai-color), #3700b3); }
+        
         .results-area { margin-top: 25px; text-align: center; display: none; }
         .balls-container { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin: 25px 0; }
         .ball { width: 55px; height: 55px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ffffff, #e0e0e0); border: 3px solid var(--primary); display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         .ball.strong { background: radial-gradient(circle at 30% 30%, #fff59d, var(--strong-ball)); border-color: #f57f17; margin-right: 15px; position: relative; }
         .ball.strong::after { content: 'חזק'; position: absolute; bottom: -22px; font-size: 12px; color: #f57f17; }
+        
         .ai-explanation { background: #f8f5ff; border-right: 4px solid var(--ai-color); padding: 20px; border-radius: 10px; text-align: right; line-height: 1.6; margin-top: 20px; white-space: pre-line; }
-        .loader { display: none; color: var(--ai-color); font-weight: bold; margin: 15px 0; text-align: center; }
+        .loader { display: none; color: var(--ai-color); font-weight: bold; margin: 15px 0; text-align: center; font-size: 15px; background: #f3e5f5; padding: 12px; border-radius: 8px; }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
         <h1>🧠 מנתח לוטו משולב בינה מלאכותית</h1>
-        <p class="subtitle">שילוב של אלגוריתם סטטיסטי עם ניתוח אסטרטגי של Gemini AI</p>
+        <p class="subtitle">סורק בזמן אמת מודלים חינמיים פנויים ועובר ביניהם אוטומטית עד להצלחה</p>
     </header>
+
     <div class="setup-grid">
+        <!-- צד ימין: טעינת נתונים -->
         <div class="box-card">
-            <label style="color: var(--secondary);">1. טען קובץ CSV של מפעל הפיס</label>
+            <label class="title-lbl" style="color: var(--secondary);">1. טען קובץ CSV של מפעל הפיס</label>
             <input type="file" id="csvFile" accept=".csv" style="display: none;" onchange="handleFileUpload(event)">
-            <button onclick="document.getElementById('csvFile').click()" style="padding: 6px 12px; cursor: pointer;">בחר קובץ מהמחשב</button>
+            <button onclick="document.getElementById('csvFile').click()" style="padding: 10px 16px; cursor: pointer; background: var(--secondary); color: white; border: none; border-radius: 8px; font-weight: bold; margin: 0 auto;">📂 בחר קובץ מהמחשב</button>
             <div id="uploadStatus" class="status-text">עובד כרגע על נתוני ברירת מחדל</div>
         </div>
+
+        <!-- צד שמאל: הגדרות AI -->
         <div class="box-card ai-box">
-            <label for="apiKey" style="color: var(--ai-color);">2. הזן מפתח Gemini API</label>
-            <input type="password" id="apiKey" placeholder="AIzaSy...">
-            <div class="status-text" style="color: #666;">הדבק כאן את המפתח מ-AI Studio</div>
+            <label class="title-lbl" style="color: var(--ai-color); text-align: center;">2. הגדרות מנוע AI וסריקת מודלים</label>
+            
+            <div class="form-row">
+                <label for="providerSelect">בחר ספק AI:</label>
+                <select id="providerSelect" onchange="toggleProviderUI()">
+                    <option value="groq">Groq (מהיר במיוחד + חינמי)</option>
+                    <option value="openrouter">OpenRouter (מגוון מודלים חינמיים)</option>
+                    <option value="gemini">Google Gemini (תוכנית חינמית)</option>
+                </select>
+            </div>
+
+            <!-- שדות מפתחות -->
+            <div id="groqKeyRow" class="form-row">
+                <label for="groqKey">מפתח Groq API:</label>
+                <input type="password" id="groqKey" placeholder="gsk_..." onchange="saveKeys()">
+            </div>
+
+            <div id="orKeyRow" class="form-row" style="display: none;">
+                <label for="openrouterKey">מפתח OpenRouter API:</label>
+                <input type="password" id="openrouterKey" placeholder="sk-or-v1-..." onchange="saveKeys()">
+            </div>
+
+            <div id="geminiKeyRow" class="form-row" style="display: none;">
+                <label for="geminiKey">מפתח Gemini API:</label>
+                <input type="password" id="geminiKey" placeholder="AIzaSy..." onchange="saveKeys()">
+            </div>
+
+            <!-- בחירת מודל + כפתור סריקה -->
+            <div class="form-row">
+                <label for="activeModelSelect">מודל מועדף (או מצב אוטומטי):</label>
+                <select id="activeModelSelect">
+                    <option value="auto">🤖 אוטומטי: סרוק ובחר את המודל החינמי הפנוי הראשון</option>
+                </select>
+                <button type="button" id="btnScanModels" class="scan-btn" onclick="scanAvailableModels(false)">🔍 סרוק ובדוק אילו מודלים חינמיים פנויים כרגע</button>
+                <div id="modelsBadge" class="models-badge"></div>
+            </div>
         </div>
     </div>
+
     <div class="btn-group">
         <button class="btn btn-stat" onclick="runStatisticalEngine()">הגרל לפי סטטיסטיקה בלבד 🎲</button>
-        <button class="btn btn-ai" onclick="runAIEngine()">נתח והמלץ באמצעות AI ✨</button>
+        <button class="btn btn-ai" onclick="runAIEngine()">סרוק מודלים פנויים ונתח באמצעות AI ✨</button>
     </div>
-    <div class="loader" id="loader">⏳ המודל מנתח את ההתפלגויות ובונה אסטרטגיה...</div>
+
+    <div class="loader" id="loader">⏳ בודק מודלים פנויים...</div>
+
     <div class="results-area" id="resultsArea">
         <h3 id="resultTitle">הצירוף המומלץ:</h3>
         <div class="balls-container" id="ballsContainer"></div>
         <div class="ai-explanation" id="explanationBox"></div>
     </div>
 </div>
+
 <script>
     let statsSummary = { totalDraws: 0, hottest: [11, 25, 33, 8, 17, 21], coldest: [4, 13, 29, 36, 2, 19], hotStrong: 5, lastDraws: [] };
+    let discoveredModels = []; // שומר את רשימת המודלים הפנויים שנסרקו
+
+    window.onload = function() {
+        if (localStorage.getItem('lotto_groq_key')) document.getElementById('groqKey').value = localStorage.getItem('lotto_groq_key');
+        if (localStorage.getItem('lotto_gemini_key')) document.getElementById('geminiKey').value = localStorage.getItem('lotto_gemini_key');
+        if (localStorage.getItem('lotto_or_key')) document.getElementById('openrouterKey').value = localStorage.getItem('lotto_or_key');
+    };
+
+    function saveKeys() {
+        localStorage.setItem('lotto_groq_key', document.getElementById('groqKey').value.trim());
+        localStorage.setItem('lotto_gemini_key', document.getElementById('geminiKey').value.trim());
+        localStorage.setItem('lotto_or_key', document.getElementById('openrouterKey').value.trim());
+    }
+
+    function toggleProviderUI() {
+        const provider = document.getElementById('providerSelect').value;
+        document.getElementById('groqKeyRow').style.display = provider === 'groq' ? 'block' : 'none';
+        document.getElementById('orKeyRow').style.display = provider === 'openrouter' ? 'block' : 'none';
+        document.getElementById('geminiKeyRow').style.display = provider === 'gemini' ? 'block' : 'none';
+        
+        // איפוס רשימת המודלים בעת החלפת ספק
+        discoveredModels = [];
+        document.getElementById('activeModelSelect').innerHTML = '<option value="auto">🤖 אוטומטי: סרוק ובחר את המודל החינמי הפנוי הראשון</option>';
+        document.getElementById('modelsBadge').style.display = 'none';
+    }
+
+    // פונקציה הסורקת בזמן אמת אילו מודלים חינמיים/פנויים קיימים אצל הספק הנבחר
+    async function scanAvailableModels(silent = false) {
+        saveKeys();
+        const provider = document.getElementById('providerSelect').value;
+        const btn = document.getElementById('btnScanModels');
+        const badge = document.getElementById('modelsBadge');
+        const select = document.getElementById('activeModelSelect');
+
+        btn.innerText = '⏳ סורק שרתים ובודק זמינות מודלים...';
+        let modelsList = [];
+
+        try {
+            if (provider === 'groq') {
+                const key = document.getElementById('groqKey').value.trim();
+                if (!key) throw new Error('יש להזין מפתח Groq API לפני הסריקה.');
+                
+                const res = await fetch('https://api.groq.com/openai/v1/models', {
+                    headers: { 'Authorization': `Bearer ${key}` }
+                });
+                const json = await res.json();
+                if (json.error) throw new Error(json.error.message);
+
+                // סינון מודלי שפה פעילים בלבד
+                modelsList = json.data
+                    .filter(m => m.active !== false && !/whisper|guard|tts|vision/i.test(m.id))
+                    .map(m => m.id);
+
+            } else if (provider === 'openrouter') {
+                const res = await fetch('https://openrouter.ai/api/v1/models');
+                const json = await res.json();
+                if (json.error) throw new Error(json.error.message);
+
+                // סינון מודלים חינמיים בלבד (מחיר 0)
+                modelsList = json.data
+                    .filter(m => m.id.endsWith(':free') || (m.pricing && parseFloat(m.pricing.prompt) === 0 && parseFloat(m.pricing.completion) === 0))
+                    .map(m => m.id);
+                
+                // הוספת הראוטר החינמי לראש הרשימה
+                modelsList.unshift('openrouter/free');
+
+            } else if (provider === 'gemini') {
+                const key = document.getElementById('geminiKey').value.trim();
+                if (!key) throw new Error('יש להזין מפתח Gemini API לפני הסריקה.');
+
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+                const json = await res.json();
+                if (json.error) throw new Error(json.error.message);
+
+                // סינון מודלים שתומכים ביצירת טקסט ומתעדף גרסאות flash/lite חינמיות
+                modelsList = json.models
+                    .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+                    .map(m => m.name.replace('models/', ''))
+                    .filter(name => !/embedding|imagen|veo|aqa/i.test(name))
+                    .sort((a, b) => (a.includes('flash') ? -1 : 1));
+            }
+
+            if (modelsList.length === 0) {
+                throw new Error('לא נמצאו מודלים חינמיים פנויים אצל ספק זה כרגע.');
+            }
+
+            discoveredModels = modelsList;
+
+            // עדכון התפריט הנפתח
+            select.innerHTML = `<option value="auto">🤖 אוטומטי: נסה ברצף מתוך ${modelsList.length} המודלים שנמצאו</option>`;
+            modelsList.forEach(modelId => {
+                const opt = document.createElement('option');
+                opt.value = modelId;
+                opt.innerText = modelId;
+                select.appendChild(opt);
+            });
+
+            badge.style.display = 'block';
+            badge.innerText = `✅ נמצאו ${modelsList.length} מודלים פעילים! (לדוגמה: ${modelsList.slice(0, 2).join(', ')})`;
+
+            if (!silent) {
+                alert(`הסריקה הושלמה!\nנמצאו ${modelsList.length} מודלים חינמיים/פעילים:\n\n• ${modelsList.slice(0, 8).join('\n• ')}${modelsList.length > 8 ? '\n...ועוד' : ''}`);
+            }
+            return modelsList;
+
+        } catch (err) {
+            if (!silent) alert('שגיאה בסריקת המודלים: ' + err.message);
+            throw err;
+        } finally {
+            btn.innerText = '🔍 סרוק ובדוק אילו מודלים חינמיים פנויים כרגע';
+        }
+    }
 
     function handleFileUpload(event) {
         const file = event.target.files[0];
@@ -106,6 +293,8 @@
             let sortedStrong = Array.from({length: 7}, (_, i) => i + 1).sort((a, b) => strongFreq[b] - strongFreq[a]);
             statsSummary = { totalDraws: validDraws, hottest: sortedNums.slice(0, 8), coldest: sortedNums.slice(-8), hotStrong: sortedStrong[0], lastDraws: recent };
             document.getElementById('uploadStatus').innerText = `✅ נותחו ${validDraws} הגרלות מהקובץ!`;
+        } else {
+            alert("לא זוהו נתונים תקינים בקובץ. ודא שזהו קובץ ה-CSV המקורי של מפעל הפיס.");
         }
     }
 
@@ -116,54 +305,125 @@
         renderOutput(combo, Math.floor(Math.random() * 7) + 1, "צירוף מבוסס סימולציה סטטיסטית:", "הצירוף נבחר על בסיס התפלגות מאוזנת ללא התערבות מודל שפה.");
     }
 
+    function buildPrompt() {
+        return `אתה אנליסט נתונים ומומחה לסטטיסטיקה של הגרלות לוטו (6 מספרים מתוך 1-37 + מספר חזק 1-7).
+להלן הנתונים ההיסטוריים:
+- סך הגרלות: ${statsSummary.totalDraws || 'מדגם'}
+- מספרים חמים: ${statsSummary.hottest.join(', ')}
+- מספרים קרים: ${statsSummary.coldest.join(', ')}
+- מספר חזק נפוץ: ${statsSummary.hotStrong}
+- הגרלות אחרונות: ${statsSummary.lastDraws.join(' | ') || 'אין'}
+
+משימתך: הרכב טופס לוטו מומלץ המאזן חמים/קרים, זוגי/אי-זוגי, וכולל לפחות מספר אחד מעל 31 כדי להימנע מחלוקת פרס על תאריכי לידה.
+החזר אך ורק JSON תקין במבנה הבא (ללא סימני markdown, ללא מחשבות מקדימות או טקסט נוסף):
+{"numbers": [1, 2, 3, 4, 5, 6], "strong": 1, "explanation": "הסבר מקצועי בעברית"}`;
+    }
+
+    function extractJSON(text) {
+        let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '');
+        cleaned = cleaned.replace(/```json/gi, '').replace(/```/g, '').trim();
+        const firstBrace = cleaned.indexOf('{');
+        const lastBrace = cleaned.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+            cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+        }
+        return JSON.parse(cleaned);
+    }
+
+    // מנוע חכם שסורק קודם מודלים פנויים ומנסה אותם אחד אחרי השני עד להצלחה
     async function runAIEngine() {
-        const apiKey = document.getElementById('apiKey').value.trim();
-        if (!apiKey) { alert("אנא הזן מפתח API של Google Gemini בשדה הסגול למעלה."); return; }
-        
-        document.getElementById('loader').style.display = 'block';
+        saveKeys();
+        const provider = document.getElementById('providerSelect').value;
+        const loader = document.getElementById('loader');
+        loader.style.display = 'block';
         document.getElementById('resultsArea').style.display = 'none';
 
-        const prompt = `אתה אנליסט נתונים ומומחה לסטטיסטיקה של הגרלות לוטו (6 מספרים מתוך 1-37 + מספר חזק 1-7). להלן הנתונים ההיסטוריים: סך הגרלות: ${statsSummary.totalDraws || 'מדגם'}, מספרים חמים: ${statsSummary.hottest.join(', ')}, מספרים קרים: ${statsSummary.coldest.join(', ')}, מספר חזק נפוץ: ${statsSummary.hotStrong}, הגרלות אחרונות: ${statsSummary.lastDraws.join(' | ') || 'אין'}. הרכב טופס לוטו מומלץ המאזן חמים/קרים, זוגי/אי-זוגי, וכולל לפחות מספר אחד מעל 31. החזר אך ורק JSON תקין במבנה: {"numbers": [1, 2, 3, 4, 5, 6], "strong": 1, "explanation": "הסבר בעברית"}`;
-
-        const modelsToTry = ['gemini-3.8-flash', 'gemini-3.8-flash-lite', 'gemini-3.8-pro'];
-        let success = false;
-        let lastError = '';
-
-        for (const modelName of modelsToTry) {
-            try {
-                document.getElementById('loader').innerText = `⏳ מתחבר למודל ${modelName} ומנתח נתונים...`;
-                
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: prompt }] }], 
-                        generationConfig: { responseMimeType: "application/json" } 
-                    })
-                });
-
-                const data = await response.json();
-                if (data.error) {
-                    lastError = data.error.message;
-                    continue;
-                }
-
-                const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
-                parsed.numbers.sort((a, b) => a - b);
-                renderOutput(parsed.numbers, parsed.strong, `המלצת האנליסט (${modelName}):`, parsed.explanation);
-                success = true;
-                break;
-
-            } catch (err) {
-                lastError = err.message;
+        try {
+            // שלב 1: אם עדיין לא נסרקו מודלים, סורק עכשיו בזמן אמת
+            if (discoveredModels.length === 0) {
+                loader.innerText = '🔍 שלב 1/2: סורק את שרתי הספק לאיתור מודלים חינמיים פנויים...';
+                await scanAvailableModels(true);
             }
-        }
 
-        if (!success) {
-            alert("כל המודלים עמוסים כרגע. נסה שוב בעוד כדקה.\nפרטי שגיאה: " + lastError);
+            const selectedOption = document.getElementById('activeModelSelect').value;
+            const candidates = selectedOption === 'auto' ? discoveredModels : [selectedOption];
+
+            let success = false;
+            let lastError = '';
+
+            // שלב 2: מעבר על המודלים הפנויים עד שאחד מחזיר תשובה תקינה
+            for (let i = 0; i < candidates.length; i++) {
+                const modelName = candidates[i];
+                loader.innerText = `⚡ שלב 2/2: בודק ומריץ על מודל פנוי (${i + 1}/${candidates.length}): ${modelName}...`;
+
+                try {
+                    const result = await callProviderModel(provider, modelName);
+                    result.numbers.sort((a, b) => a - b);
+                    renderOutput(result.numbers, result.strong, `המלצת האנליסט (${provider.toUpperCase()} | ${result.usedModel}):`, result.explanation);
+                    success = true;
+                    break;
+                } catch (err) {
+                    lastError = `${modelName}: ${err.message}`;
+                    // אם המודל עמוס או לא זמין, הלולאה תמשיך אוטומטית למודל הבא ברשימה
+                }
+            }
+
+            if (!success) {
+                alert(`כל המודלים שנבדקו אצל ${provider} עמוסים או חסומים כרגע.\nנסה לעבור לספק אחר בתפריט.\n\nשגיאה אחרונה: ${lastError}`);
+            }
+
+        } catch (err) {
+            alert('שגיאה: ' + err.message);
+        } finally {
+            loader.style.display = 'none';
         }
-        
-        document.getElementById('loader').style.display = 'none';
+    }
+
+    async function callProviderModel(provider, modelName) {
+        if (provider === 'groq') {
+            const apiKey = document.getElementById('groqKey').value.trim();
+            const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: modelName, messages: [{ role: 'user', content: buildPrompt() }], temperature: 0.7 })
+            });
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+            const parsed = extractJSON(data.choices[0].message.content);
+            return { ...parsed, usedModel: modelName };
+
+        } else if (provider === 'openrouter') {
+            const apiKey = document.getElementById('openrouterKey').value.trim();
+            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': window.location.href,
+                    'X-Title': 'Lotto AI Analyzer'
+                },
+                body: JSON.stringify({ model: modelName, messages: [{ role: 'user', content: buildPrompt() }] })
+            });
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+            const parsed = extractJSON(data.choices[0].message.content);
+            return { ...parsed, usedModel: data.model || modelName };
+
+        } else if (provider === 'gemini') {
+            const apiKey = document.getElementById('geminiKey').value.trim();
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: buildPrompt() }] }],
+                    generationConfig: { responseMimeType: "application/json" }
+                })
+            });
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+            const parsed = extractJSON(data.candidates[0].content.parts[0].text);
+            return { ...parsed, usedModel: modelName };
+        }
     }
 
     function renderOutput(numbers, strong, title, explanation) {
